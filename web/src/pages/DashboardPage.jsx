@@ -156,10 +156,10 @@ export default function DashboardPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-surface-muted">
-                  <th className="px-4 py-2.5 text-left section-label">Link</th>
-                  <th className="px-4 py-2.5 text-left section-label">Status</th>
-                  <th className="px-4 py-2.5 text-left section-label">Clicks</th>
-                  <th className="px-4 py-2.5 text-right section-label">Actions</th>
+                  <th className="px-5 py-3 text-left section-label">Link</th>
+                  <th className="px-5 py-3 text-left section-label">Status</th>
+                  <th className="px-5 py-3 text-left section-label">Clicks</th>
+                  <th className="px-5 py-3 text-right section-label">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -199,3 +199,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

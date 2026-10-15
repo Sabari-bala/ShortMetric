@@ -6,21 +6,29 @@ export default function EmptyState({
   description,
   actionLabel,
   actionTo,
+  onAction,
   icon: Icon = Inbox,
 }) {
   return (
-    <div className="card text-center py-14 border-dashed">
-      <div className="flex justify-center mb-4">
-        <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center">
-          <Icon className="w-7 h-7 text-primary" />
+    <div className="card border-dashed py-12 text-center">
+      <div className="flex justify-center mb-3">
+        <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center">
+          <Icon className="w-4 h-4 text-ink-muted" strokeWidth={1.75} />
         </div>
       </div>
-      <h3 className="text-lg font-semibold text-ink-primary mb-1">{title}</h3>
-      {description && <p className="text-ink-muted text-sm mb-5">{description}</p>}
+      <h3 className="text-sm font-semibold text-ink-primary mb-1">{title}</h3>
+      {description && (
+        <p className="text-xs text-ink-muted max-w-sm mx-auto mb-5 px-4">{description}</p>
+      )}
       {actionLabel && actionTo && (
-        <Link to={actionTo} className="btn btn-primary inline-flex">
+        <Link to={actionTo} className="btn btn-primary btn-sm inline-flex">
           {actionLabel}
         </Link>
+      )}
+      {actionLabel && onAction && !actionTo && (
+        <button onClick={onAction} className="btn btn-primary btn-sm inline-flex">
+          {actionLabel}
+        </button>
       )}
     </div>
   );

@@ -1,9 +1,6 @@
 ﻿/** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {
@@ -14,59 +11,49 @@ export default {
           light: '#E6F6F2',
           soft: '#D1EDE8',
         },
-        secondary: {
+        accent: {
           DEFAULT: '#14B8A6',
-          light: '#E6FFFA',
+          light: '#CCFBF1',
         },
-        bg: {
-          DEFAULT: '#F7F9FA',
-          soft: '#FAFBFC',
-        },
+        bg: '#F7F8F6',
         surface: {
           DEFAULT: '#FFFFFF',
-          hover: '#F3F6F7',
-          muted: '#F7F9FA',
+          hover: '#F3F6F4',
+          muted: '#F1F4F2',
         },
         ink: {
-          primary: '#17232D',
-          secondary: '#52616B',
-          muted: '#74818A',
-          disabled: '#A5AEB6',
+          primary: '#1B2528',
+          secondary: '#59676A',
+          muted: '#7C888A',
+          disabled: '#A8B2B4',
         },
         border: {
-          DEFAULT: '#E1E8EB',
-          strong: '#CFD9DD',
+          DEFAULT: '#E3E8E5',
+          strong: '#CFD7D4',
         },
-        success: {
-          DEFAULT: '#15803D',
-          light: '#ECFDF3',
-        },
-        danger: {
-          DEFAULT: '#DC2626',
-          light: '#FEF2F2',
-        },
-        warning: {
-          DEFAULT: '#D97706',
-          light: '#FFF7E6',
-        },
-        info: {
-          DEFAULT: '#2563EB',
-          light: '#EFF6FF',
-        },
+        success: { DEFAULT: '#15803D', light: '#F0FDF4' },
+        danger:  { DEFAULT: '#DC2626', light: '#FEF2F2' },
+        warning: { DEFAULT: '#D97706', light: '#FFFBEB' },
+        info:    { DEFAULT: '#2563EB', light: '#EFF6FF' },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
       },
+      fontSize: {
+        '2xs': ['0.6875rem', { lineHeight: '1rem' }],
+      },
       boxShadow: {
-        sm: '0 1px 2px rgba(23, 35, 45, 0.04)',
-        md: '0 4px 12px rgba(23, 35, 45, 0.06)',
-        lg: '0 12px 30px rgba(23, 35, 45, 0.08)',
+        xs: '0 1px 2px rgba(27, 37, 40, 0.04)',
+        sm: '0 1px 3px rgba(27, 37, 40, 0.06)',
+        md: '0 4px 12px rgba(27, 37, 40, 0.06)',
+        lg: '0 12px 28px rgba(27, 37, 40, 0.08)',
       },
       borderRadius: {
-        sm: '6px',
-        md: '10px',
-        lg: '14px',
-        xl: '18px',
+        sm: '5px',
+        DEFAULT: '7px',
+        md: '8px',
+        lg: '10px',
+        xl: '14px',
       },
     },
   },

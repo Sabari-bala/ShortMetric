@@ -1,26 +1,28 @@
-﻿export default function MetricCard({ label, value, icon: Icon, accent = 'primary' }) {
+﻿export default function MetricCard({ label, value, subtitle, icon: Icon, accent = 'default' }) {
   const accents = {
+    default: 'text-ink-secondary bg-surface-muted',
     primary: 'text-primary bg-primary-light',
     success: 'text-success bg-success-light',
     warning: 'text-warning bg-warning-light',
-    danger: 'text-danger bg-danger-light',
+    danger:  'text-danger bg-danger-light',
   };
 
   return (
-    <div className="card p-5 flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
-      {Icon && (
-        <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${accents[accent]}`}>
-          <Icon className="w-5 h-5" />
-        </div>
-      )}
-      <div className="min-w-0">
-        <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
-          {label}
-        </div>
-        <div className="text-2xl font-bold text-ink-primary leading-tight">
-          {value}
-        </div>
+    <div className="card card-hover p-4">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <span className="section-label">{label}</span>
+        {Icon && (
+          <div className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 ${accents[accent]}`}>
+            <Icon className="w-3.5 h-3.5" strokeWidth={2} />
+          </div>
+        )}
       </div>
+      <div className="text-xl font-semibold text-ink-primary tracking-tight leading-none">
+        {value}
+      </div>
+      {subtitle && (
+        <div className="text-2xs text-ink-muted mt-1.5">{subtitle}</div>
+      )}
     </div>
   );
 }

@@ -1,440 +1,150 @@
-﻿# LinkPulse — Smart URL Management & Analytics
+﻿# ShortMetric 🔗
 
-LinkPulse is a full-stack SaaS-style URL shortener and analytics platform built with **Django REST Framework** and **Vanilla JavaScript**.
+**Short links. Clear insights.**
 
-It allows users to create short links, share them, manage them, and track useful click analytics.
+ShortMetric is a full-stack URL shortening and click analytics application built to make sharing links simpler and help users understand how their links perform.
 
----
+## ✨ Features
 
-## 🚀 Features
+- Create short links from longer URLs.
+- Access and manage shortened links through the web interface.
+- View click analytics for supported links.
+- Explore available traffic insights, such as browser, device, operating system, and referrer, where implemented.
+- Use the responsive interface across desktop and mobile screens.
 
-* User registration, login, and logout
-* Token-based authentication
-* Create short links with optional custom aliases
-* Automatic short code generation
-* Edit, enable/disable, and delete links
-* Link expiration dates
-* Backend redirect system with validation
-* Click tracking
-* Browser information
-* Device category
-* Operating system
-* Referrer information
-* Dashboard statistics
-* Total links
-* Total clicks
-* Active links
-* Expired links
-* Per-link analytics
-* Recent click activity
-* Responsive frontend for desktop, tablet, and mobile
-* REST API for core functionality
-* Automated tests covering authentication, links, redirects, and analytics
-
----
+> Feature availability depends on the current implementation. Refer to the application itself for the supported functionality.
 
 ## 🛠️ Tech Stack
 
-### Backend
-
-* Python
-* Django
-* Django REST Framework
-* SQLite for development
-* PostgreSQL-ready production configuration
-
 ### Frontend
+- React
+- Vite
+- Tailwind CSS
+- JavaScript
 
-* HTML5
-* CSS3
-* CSS Variables
-* Responsive CSS
-* Vanilla JavaScript
+### Backend
+- Python
+- Django
+- Django REST Framework
 
-### Tools
+### Database
+- SQLite for local development, subject to the current configuration.
+- PostgreSQL for production, if configured.
 
-* Git
-* GitHub
-* Environment Variables
+## 🏗️ Architecture
 
----
+ShortMetric separates its frontend interface from its backend API.
+
+1. The React frontend provides the user interface.
+2. The Django REST Framework backend processes supported API requests.
+3. The configured database stores application data.
+4. The frontend communicates with the backend through HTTP requests.
 
 ## 📁 Project Structure
 
 ```text
-LinkPulse/
-│
-├── backend/
-│   │
-│   ├── apps/
-│   │   ├── users/
-│   │   │   ├── models.py
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
-│   │   │   ├── urls.py
-│   │   │   └── tests.py
-│   │   │
-│   │   ├── links/
-│   │   │   ├── models.py
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
-│   │   │   ├── urls.py
-│   │   │   └── tests.py
-│   │   │
-│   │   ├── analytics/
-│   │   │   ├── models.py
-│   │   │   ├── utils.py
-│   │   │   ├── views.py
-│   │   │   ├── urls.py
-│   │   │   └── tests.py
-│   │   │
-│   │   └── core/
-│   │       ├── views.py
-│   │       └── urls.py
-│   │
-│   ├── config/
-│   │   ├── settings/
-│   │   │   ├── base.py
-│   │   │   ├── development.py
-│   │   │   └── production.py
-│   │   ├── urls.py
-│   │   ├── asgi.py
-│   │   └── wsgi.py
-│   │
-│   ├── requirements/
-│   │   ├── base.txt
-│   │   ├── development.txt
-│   │   └── production.txt
-│   │
-│   └── manage.py
-│
-├── frontend/
-│   ├── index.html
-│   │
-│   ├── pages/
-│   │   ├── login.html
-│   │   ├── register.html
-│   │   ├── dashboard.html
-│   │   ├── create-link.html
-│   │   ├── link-details.html
-│   │   ├── analytics.html
-│   │   └── profile.html
-│   │
-│   ├── css/
-│   │   ├── style.css
-│   │   ├── auth.css
-│   │   ├── dashboard.css
-│   │   └── responsive.css
-│   │
-│   ├── js/
-│   │   ├── api.js
-│   │   ├── auth.js
-│   │   ├── dashboard.js
-│   │   ├── links.js
-│   │   ├── analytics.js
-│   │   ├── link-details.js
-│   │   ├── profile.js
-│   │   └── ui.js
-│   │
-│   └── images/
-│
-├── docs/
-│
-├── .env.example
+ShortMetric/
+├── backend/       # Django backend
+├── web/           # React and Vite frontend
+├── docs/          # Project documentation
+├── .env.example   # Example environment configuration
 ├── .gitignore
-├── README.md
-└── LICENSE
+├── LICENSE
+└── README.md
 ```
 
----
+This is a high-level overview; the exact files and folders may differ.
 
-## 🔌 REST API Endpoints
+## 🚀 Getting Started
 
-| Method    | Endpoint                    | Description                               |
-| --------- | --------------------------- | ----------------------------------------- |
-| POST      | `/api/auth/register/`       | Register a new user                       |
-| POST      | `/api/auth/login/`          | Login user                                |
-| POST      | `/api/auth/logout/`         | Logout user                               |
-| GET       | `/api/links/`               | List current user's links                 |
-| POST      | `/api/links/`               | Create a new link                         |
-| GET       | `/api/links/<id>/`          | Retrieve link details                     |
-| PUT/PATCH | `/api/links/<id>/`          | Update link                               |
-| DELETE    | `/api/links/<id>/`          | Delete link                               |
-| GET       | `/api/analytics/`           | Dashboard analytics summary               |
-| GET       | `/api/analytics/<link_id>/` | Per-link analytics                        |
-| GET       | `/<short_code>/`            | Redirect to original URL and record click |
+### Prerequisites
 
----
+Install the following before running the project:
 
-## 🗄️ Database Models
-
-### Profile
-
-One-to-One relationship with the Django User.
-
-Stores additional user profile information.
-
-### Link
-
-Stores information about shortened URLs.
-
-Main fields include:
-
-* Original URL
-* Short code
-* Custom alias
-* Active status
-* Expiration date
-* Owner
-* Creation timestamp
-
-### Click
-
-Stores analytics information for each link click.
-
-Main fields include:
-
-* Link
-* Click timestamp
-* Referrer
-* Browser
-* Device category
-* Operating system
-
----
-
-## 🔄 How LinkPulse Works
-
-The core redirect flow is:
-
-```text
-Visitor
-   ↓
-Short URL
-   ↓
-Django Redirect View
-   ↓
-Find Short Code
-   ↓
-Check Link Exists
-   ↓
-Check Active Status
-   ↓
-Check Expiration
-   ↓
-Record Click Analytics
-   ↓
-Redirect to Original URL
-```
-
-For example:
-
-```text
-https://linkpulse.com/a8K92x
-```
-
-can redirect to:
-
-```text
-https://example.com/python-course
-```
-
-while recording the click for analytics.
-
----
-
-## 📊 Analytics
-
-LinkPulse records useful information about link activity.
-
-Depending on the available request information, analytics may include:
-
-* Total clicks
-* Click timestamp
-* Referrer
-* Browser
-* Device category
-* Operating system
-
-The dashboard provides a high-level view of link performance, while individual link analytics provide more detailed click activity.
-
----
-
-## 📦 Installation & Setup
+- Python
+- Node.js and npm
+- Git
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Sabari-bala/LinkPulse.git
-cd LinkPulse
+git clone https://github.com/Sabari-bala/ShortMetric.git
+cd ShortMetric
 ```
 
-### 2. Create a virtual environment
+### 2. Set up the backend
 
-```bash
-python -m venv venv
-```
+From the project root, create and activate a Python virtual environment.
 
-### 3. Activate the virtual environment
-
-#### Windows PowerShell
+**Windows PowerShell:**
 
 ```powershell
+python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-#### Windows Command Prompt
-
-```cmd
-venv\Scripts\activate
-```
-
-#### macOS / Linux
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Install dependencies
-
-```bash
-cd backend
-python -m pip install -r requirements/development.txt
-```
-
-### 5. Configure environment variables
-
-Copy `.env.example` to `.env`.
-
-For Windows PowerShell:
+Install the backend dependencies using the dependency file provided in the `backend` directory. For example, if the project contains `requirements.txt`:
 
 ```powershell
-Copy-Item .env.example .env
+pip install -r .\backend\requirements.txt
 ```
 
-For macOS / Linux:
+Configure the required environment variables using the project's actual settings and `.env.example`. Do not commit real credentials or secret keys.
 
-```bash
-cp .env.example .env
+Run migrations and start the Django development server using the project's configured Django settings and entry point.
+
+### 3. Set up the frontend
+
+```powershell
+Set-Location .\web
+npm install
+npm run dev
 ```
 
-Update the `.env` file with the required configuration.
+Open the local URL printed by Vite in the terminal.
 
-**Never commit `.env` or other secrets to GitHub.**
+### 4. Build the frontend
 
-### 6. Run database migrations
+From the `web` directory:
 
-```bash
-python manage.py migrate
+```powershell
+npm run build
 ```
 
-### 7. Start the development server
+The build output is generated in the `dist` directory by default.
 
-```bash
-python manage.py runserver
-```
+> Follow the actual project configuration if dependency files, environment variables, API URLs, or run commands differ from these examples.
 
-### 8. Open LinkPulse
+## 🔐 Configuration and Security
 
-Visit:
+- Keep secret keys, database passwords, and API credentials out of source control.
+- Use `.env.example` as a template, not as a place to store production secrets.
+- Configure allowed hosts, CORS, database connections, and debug settings appropriately before production deployment.
+- Use HTTPS for deployed applications.
+- Validate URLs and handle invalid or unsafe requests on the backend.
 
-```text
-http://127.0.0.1:8000/
-```
+## 🧪 Testing
 
----
+Run the tests supported by the current backend and frontend setup before releasing changes. Test commands depend on the project's installed dependencies and configuration.
 
-## 🧪 Running Tests
+## 🌐 Deployment
 
-From the `backend` directory:
+The frontend and backend can be deployed separately when their production configurations are ready.
 
-```bash
-python manage.py test
-```
+Before deployment, verify:
 
-The project currently contains automated tests covering important areas such as:
+- Production environment variables and database configuration.
+- Frontend API base URL.
+- Backend CORS and allowed-host settings.
+- Database migrations and static assets.
+- Build results and essential application flows.
 
-* Authentication
-* Link creation and management
-* Authorization
-* Redirect behavior
-* Expiration handling
-* Click tracking
-* Analytics
+Add the actual live application URL here after deployment has been completed and verified.
 
----
+## 🎯 Project Goal
 
-## 🔐 Security
-
-LinkPulse follows basic web application security practices, including:
-
-* Password hashing through Django authentication
-* Authentication and authorization
-* User-specific resource permissions
-* Backend validation
-* URL validation
-* CSRF protection where applicable
-* Environment-based secret configuration
-* Production-specific settings
-* Secure handling of sensitive configuration
-
-Secrets and credentials should never be committed to the repository.
-
----
-
-## 📱 Responsive Design
-
-The frontend is designed to work across:
-
-* Desktop
-* Laptop
-* Tablet
-* Mobile
-
-The dashboard and other pages use responsive layouts so that important information and actions remain accessible on smaller screens.
-
----
-
-## 🚧 Future Improvements
-
-Potential future improvements include:
-
-* Advanced analytics charts
-* Privacy-conscious geographic analytics
-* QR code generation
-* UTM campaign tracking
-* Rate limiting
-* API keys
-* Production deployment
-* PostgreSQL deployment
-* Docker-based deployment
-* Additional automated tests
-
-These features are intentionally kept separate from the core application to avoid unnecessary complexity.
-
----
-
-## 📌 Project Status
-
-LinkPulse is a portfolio-focused full-stack project built to demonstrate practical skills in:
-
-* Python
-* Django
-* Django REST Framework
-* SQL and relational databases
-* HTML
-* CSS
-* JavaScript
-* REST API development
-* Authentication and authorization
-* Backend business logic
-* Analytics
-* Responsive UI/UX
-* Testing
-* Git and GitHub
-
----
+ShortMetric is a portfolio project focused on full-stack development, REST API integration, database-backed application design, and practical analytics functionality.
 
 ## 📄 License
 
-This project is open-source and available under the **MIT License**.
+See the [LICENSE](LICENSE) file for the applicable license.

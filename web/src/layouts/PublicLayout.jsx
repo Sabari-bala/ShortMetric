@@ -24,15 +24,8 @@ export default function PublicLayout() {
           <nav className="flex items-center gap-1">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="btn btn-ghost btn-sm">
-                  Dashboard
-                </Link>
-                <Link to="/create-link" className="btn btn-ghost btn-sm">
-                  Create Link
-                </Link>
-                <span className="hidden md:inline text-xs text-ink-muted px-2">
-                  {user?.username}
-                </span>
+                <Link to="/dashboard" className="btn btn-ghost btn-sm">Dashboard</Link>
+                <Link to="/create-link" className="btn btn-ghost btn-sm">Create Link</Link>
                 <button
                   onClick={handleLogout}
                   className="btn btn-ghost btn-sm text-ink-secondary hover:text-danger"
@@ -55,8 +48,15 @@ export default function PublicLayout() {
         <Outlet />
       </main>
       <footer className="border-t border-border bg-surface">
-        <div className="max-w-6xl mx-auto px-6 py-6 text-center text-xs text-ink-muted">
-          ShortMetric is an independent portfolio project.
+        <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs text-ink-muted">
+            <span className="w-4 h-4 rounded bg-primary flex items-center justify-center text-white text-[9px] font-bold">S</span>
+            ShortMetric — Short links. Clear insights.
+          </div>
+          <div className="flex items-center gap-4 text-xs text-ink-muted">
+            <a href="/#features" className="hover:text-ink-primary transition-colors">Features</a>
+            <Link to="/register" className="hover:text-ink-primary transition-colors">Get Started</Link>
+          </div>
         </div>
       </footer>
     </div>

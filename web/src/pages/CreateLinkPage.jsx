@@ -41,27 +41,16 @@ export default function CreateLinkPage() {
         next.original_url = 'Please enter a valid URL (e.g., https://example.com)';
       }
     }
-
     const alias = form.short_code.trim();
     if (alias) {
-      if (!/^[a-zA-Z0-9]+$/.test(alias)) {
-        next.short_code = 'Alias can only contain letters and numbers.';
-      } else if (alias.length < 3) {
-        next.short_code = 'Alias must be at least 3 characters.';
-      } else if (alias.length > 30) {
-        next.short_code = 'Alias must be at most 30 characters.';
-      } else if (RESERVED_ALIASES.includes(alias.toLowerCase())) {
-        next.short_code = 'This alias is reserved. Please choose another.';
-      }
+      if (!/^[a-zA-Z0-9]+$/.test(alias)) next.short_code = 'Letters and numbers only.';
+      else if (alias.length < 3) next.short_code = 'Minimum 3 characters.';
+      else if (alias.length > 30) next.short_code = 'Maximum 30 characters.';
+      else if (RESERVED_ALIASES.includes(alias.toLowerCase())) next.short_code = 'This alias is reserved.';
     }
-
-    if (form.expires_at) {
-      const exp = new Date(form.expires_at);
-      if (exp <= new Date()) {
-        next.expires_at = 'Expiration must be in the future.';
-      }
+    if (form.expires_at && new Date(form.expires_at) <= new Date()) {
+      next.expires_at = 'Expiration must be in the future.';
     }
-
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -69,28 +58,22 @@ export default function CreateLinkPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setSubmitting(true);
     try {
       const payload = { original_url: form.original_url.trim() };
       if (form.short_code.trim()) payload.short_code = form.short_code.trim();
       if (form.expires_at) payload.expires_at = new Date(form.expires_at).toISOString();
-
       const data = await linksService.create(payload);
       setCreated(data);
     } catch (err) {
       const data = err.response?.data;
-      let serverError = 'Failed to create link. Please try again.';
+      let msg = 'Failed to create link.';
       if (data) {
-        if (data.original_url) {
-          serverError = Array.isArray(data.original_url) ? data.original_url[0] : data.original_url;
-        } else if (data.short_code) {
-          serverError = Array.isArray(data.short_code) ? data.short_code[0] : data.short_code;
-        } else if (data.detail) {
-          serverError = data.detail;
-        }
+        const key = data.original_url ? 'original_url' : data.short_code ? 'short_code' : null;
+        if (key) msg = Array.isArray(data[key]) ? data[key][0] : data[key];
+        else if (data.detail) msg = data.detail;
       }
-      setErrors({ form: serverError });
+      setErrors({ form: msg });
     } finally {
       setSubmitting(false);
     }
@@ -100,16 +83,7 @@ export default function CreateLinkPage() {
     if (!created) return;
     const url = getShortUrl(created.short_code);
     try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(url);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = url;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {}
@@ -124,37 +98,37 @@ export default function CreateLinkPage() {
   if (created) {
     const shortUrl = getShortUrl(created.short_code);
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="card text-center py-10">
-          <div className="w-14 h-14 mx-auto rounded-full bg-success-light flex items-center justify-center mb-4">
-            <Check className="w-7 h-7 text-success" />
+      <div className="max-w-xl mx-auto">
+        <div className="card p-8 text-center">
+          <div className="w-12 h-12 mx-auto rounded-full bg-success-light flex items-center justify-center mb-4">
+            <Check className="w-5 h-5 text-success" strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl font-bold text-ink-primary mb-1">Your link is ready!</h2>
-          <p className="text-sm text-ink-muted mb-6">Copy and share it anywhere.</p>
+          <h2 className="text-lg font-semibold text-ink-primary mb-1">Your link is ready!</h2>
+          <p className="text-xs text-ink-muted mb-6">Copy and share it anywhere.</p>
 
-          <div className="bg-surface-muted border border-border rounded-md p-4 mb-6 flex items-center justify-between gap-3 flex-wrap">
-            <a href={shortUrl} target="_blank" rel="noreferrer" className="text-primary font-semibold break-all text-left">
+          <div className="bg-surface-muted border border-border rounded-md p-3 mb-4 flex items-center justify-between gap-2 flex-wrap">
+            <a href={shortUrl} target="_blank" rel="noreferrer" className="text-sm font-medium text-primary break-all text-left">
               {shortUrl}
             </a>
             <button onClick={handleCopy} className="btn btn-outline btn-sm">
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
 
-          <div className="text-xs text-ink-muted mb-6 break-all">
-            <span className="font-semibold">Original:</span> {created.original_url}
+          <div className="text-2xs text-ink-muted mb-6 break-all">
+            <span className="font-medium">Destination:</span> {created.original_url}
           </div>
 
           <div className="flex flex-wrap gap-2 justify-center">
-            <button onClick={handleCreateAnother} className="btn btn-outline">
-              <PlusCircle className="w-4 h-4" /> Create Another
+            <button onClick={handleCreateAnother} className="btn btn-outline btn-sm">
+              <PlusCircle className="w-3.5 h-3.5" /> Create Another
             </button>
-            <Link to={`/analytics/${created.id}`} className="btn btn-primary">
-              <BarChart3 className="w-4 h-4" /> View Analytics
+            <Link to={`/analytics/${created.id}`} className="btn btn-primary btn-sm">
+              <BarChart3 className="w-3.5 h-3.5" /> View Analytics
             </Link>
-            <Link to={`/link-details/${created.id}`} className="btn btn-outline">
-              <FileText className="w-4 h-4" /> Details
+            <Link to={`/link-details/${created.id}`} className="btn btn-outline btn-sm">
+              <FileText className="w-3.5 h-3.5" /> Details
             </Link>
           </div>
         </div>
@@ -163,17 +137,15 @@ export default function CreateLinkPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-ink-primary">Create a short link</h1>
-        <p className="text-sm text-ink-muted">
-          Shorten any URL, optionally customize the alias, and start tracking clicks.
-        </p>
+        <h1 className="page-title">Create a short link</h1>
+        <p className="page-subtitle">Shorten any URL, optionally customize the alias, and start tracking clicks.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card space-y-4" noValidate>
+      <form onSubmit={handleSubmit} className="card p-5 space-y-4" noValidate>
         {errors.form && (
-          <div className="px-3 py-2 rounded-md bg-danger-light text-danger text-sm">
+          <div className="px-3 py-2 rounded-md bg-danger-light text-danger text-xs">
             {errors.form}
           </div>
         )}

@@ -6,20 +6,20 @@ export default function CopyButton({ text, className = '', label = 'Copy' }) {
 
   const handleCopy = async () => {
     try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard) {
         await navigator.clipboard.writeText(text);
       } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
         document.execCommand('copy');
-        document.body.removeChild(textarea);
+        document.body.removeChild(ta);
       }
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch (err) {
-      // silent fail; user can copy manually
+    } catch {
+      alert('Copy failed. Please copy manually.');
     }
   };
 
@@ -27,10 +27,11 @@ export default function CopyButton({ text, className = '', label = 'Copy' }) {
     <button
       type="button"
       onClick={handleCopy}
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded-sm border text-xs font-semibold transition ${
+      title={copied ? 'Copied' : 'Copy'}
+      className={`inline-flex items-center gap-1 h-6 px-1.5 rounded text-2xs font-medium transition-colors duration-100 ${
         copied
-          ? 'bg-success-light border-success text-success'
-          : 'bg-transparent border-primary text-primary hover:bg-primary-light'
+          ? 'bg-success-light text-success'
+          : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary'
       } ${className}`}
     >
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}

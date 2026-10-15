@@ -1,8 +1,8 @@
-﻿import { useState } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Link as LinkIcon, BarChart3, User,
-  Plus, LogOut, Menu, X,
+  Plus, LogOut, Menu, X, Settings, ChevronUp,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -10,18 +10,28 @@ const primaryNav = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/links',     label: 'Links',     icon: LinkIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-];
-
-const secondaryNav = [
-  { to: '/profile', label: 'Profile', icon: User },
+  { to: '/profile',   label: 'Profile',   icon: User },
 ];
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = async () => {
+    setUserMenuOpen(false);
     await logout();
     navigate('/login');
   };
@@ -69,32 +79,53 @@ export default function DashboardLayout() {
         {primaryNav.map((item) => (
           <NavItem key={item.to} {...item} onClick={onNavClick} />
         ))}
-
-        <div className="pt-3 mt-3 border-t border-border">
-          <div className="px-2.5 mb-1.5 section-label">Account</div>
-          {secondaryNav.map((item) => (
-            <NavItem key={item.to} {...item} onClick={onNavClick} />
-          ))}
-        </div>
       </nav>
 
-      <div className="p-3 border-t border-border">
-        <div className="flex items-center gap-2.5 px-2.5 h-8 mb-1">
-          <div className="w-6 h-6 rounded-full bg-primary-light flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-semibold text-primary">
+      {/* ChatGPT-style user menu */}
+      <div className="p-3 border-t border-border relative" ref={menuRef}>
+        {userMenuOpen && (
+          <div className="absolute bottom-full left-3 right-3 mb-2 bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
+            <div className="px-3 py-2.5 border-b border-border">
+              <div className="text-xs font-medium text-ink-primary truncate">
+                {user?.username}
+              </div>
+              <div className="text-2xs text-ink-muted truncate">Signed in</div>
+            </div>
+            <div className="p-1">
+              <button
+                onClick={() => { setUserMenuOpen(false); navigate('/profile'); }}
+                className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-[13px] font-medium text-ink-secondary hover:bg-surface-hover hover:text-ink-primary transition-colors"
+              >
+                <Settings className="w-3.5 h-3.5" strokeWidth={1.75} />
+                Settings
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-[13px] font-medium text-ink-secondary hover:bg-danger-light hover:text-danger transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" strokeWidth={1.75} />
+                Log out
+              </button>
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={() => setUserMenuOpen(!userMenuOpen)}
+          className="flex items-center gap-2 w-full h-9 px-2 rounded-md hover:bg-surface-hover transition-colors"
+        >
+          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+            <span className="text-[10px] font-semibold text-white">
               {user?.username?.[0]?.toUpperCase() || '?'}
             </span>
           </div>
-          <span className="text-xs text-ink-primary truncate font-medium">
+          <span className="text-xs text-ink-primary truncate font-medium flex-1 text-left">
             {user?.username}
           </span>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2.5 w-full h-8 px-2.5 rounded-md text-[13px] font-medium text-ink-secondary hover:bg-danger-light hover:text-danger transition-colors duration-100"
-        >
-          <LogOut className="w-4 h-4" strokeWidth={1.75} />
-          Logout
+          <ChevronUp
+            className={`w-3.5 h-3.5 text-ink-muted transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
+            strokeWidth={2}
+          />
         </button>
       </div>
     </>
@@ -102,12 +133,10 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen flex bg-bg">
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-56 bg-surface border-r border-border fixed inset-y-0 z-20">
         <SidebarContent />
       </aside>
 
-      {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 inset-x-0 z-30 h-14 bg-surface border-b border-border flex items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 text-[15px] font-semibold text-ink-primary">
           <span className="w-6 h-6 rounded-md bg-primary flex items-center justify-center text-white text-[11px] font-bold">
@@ -124,7 +153,6 @@ export default function DashboardLayout() {
         </button>
       </div>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <>
           <div
@@ -137,7 +165,6 @@ export default function DashboardLayout() {
         </>
       )}
 
-      {/* Content */}
       <div className="flex-1 md:ml-56 pt-14 md:pt-0 min-w-0">
         <main className="px-4 md:px-8 py-6 md:py-8 max-w-6xl mx-auto">
           <Outlet />

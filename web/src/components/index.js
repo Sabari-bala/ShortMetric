@@ -3,7 +3,7 @@ export { default as Input } from './Input';
 export { default as Card } from './Card';
 export { default as Badge } from './Badge';
 export { default as EmptyState } from './EmptyState';
-export { default as LoadingState, LoadingSkeleton, MetricSkeleton } from './LoadingState';
+export { default as LoadingState, TableSkeleton, MetricSkeleton } from './LoadingState';
 export { default as ErrorState } from './ErrorState';
 export { default as ProtectedRoute } from './ProtectedRoute';
 export { default as MetricCard } from './MetricCard';

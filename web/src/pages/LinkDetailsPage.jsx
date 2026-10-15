@@ -2,8 +2,8 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import {
-  ArrowLeft, Copy, Check, Save, Trash2, Power, PowerOff, ExternalLink,
-  BarChart3, Pencil, X, Download,
+  ArrowLeft, Copy, Check, Save, Trash2, Power, PowerOff,
+  ExternalLink, BarChart3, Pencil, X, Download,
 } from 'lucide-react';
 import { Input, Badge, LoadingState, ErrorState, ConfirmDialog } from '../components';
 import { linksService } from '../services/linksService';
@@ -41,9 +41,7 @@ export default function LinkDetailsPage() {
       setForm({
         original_url: data.original_url,
         short_code: data.short_code,
-        expires_at: data.expires_at
-          ? new Date(data.expires_at).toISOString().slice(0, 16)
-          : '',
+        expires_at: data.expires_at ? new Date(data.expires_at).toISOString().slice(0, 16) : '',
       });
     } catch {
       setError(true);
@@ -62,19 +60,13 @@ export default function LinkDetailsPage() {
   const validate = () => {
     const next = {};
     const url = form.original_url.trim();
-    if (!url) {
-      next.original_url = 'URL is required.';
-    } else {
+    if (!url) next.original_url = 'URL is required.';
+    else {
       try {
         const parsed = new URL(url);
-        if (!['http:', 'https:'].includes(parsed.protocol)) {
-          next.original_url = 'Must start with http:// or https://';
-        } else if (!parsed.hostname.includes('.')) {
-          next.original_url = 'Invalid domain.';
-        }
-      } catch {
-        next.original_url = 'Invalid URL.';
-      }
+        if (!['http:', 'https:'].includes(parsed.protocol)) next.original_url = 'Must start with http:// or https://';
+        else if (!parsed.hostname.includes('.')) next.original_url = 'Invalid domain.';
+      } catch { next.original_url = 'Invalid URL.'; }
     }
     if (form.expires_at && new Date(form.expires_at) <= new Date()) {
       next.expires_at = 'Expiration must be in the future.';
@@ -86,7 +78,6 @@ export default function LinkDetailsPage() {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setSaving(true);
     try {
       const payload = {
@@ -97,15 +88,12 @@ export default function LinkDetailsPage() {
       const updated = await linksService.update(id, payload);
       setLink(updated);
       setEditing(false);
-      showToast('Link updated successfully');
+      showToast('Link updated');
     } catch (err) {
       const data = err.response?.data;
-      let msg = 'Failed to update link.';
-      if (data?.short_code) {
-        msg = Array.isArray(data.short_code) ? data.short_code[0] : data.short_code;
-      } else if (data?.original_url) {
-        msg = Array.isArray(data.original_url) ? data.original_url[0] : data.original_url;
-      }
+      let msg = 'Failed to update.';
+      if (data?.short_code) msg = Array.isArray(data.short_code) ? data.short_code[0] : data.short_code;
+      else if (data?.original_url) msg = Array.isArray(data.original_url) ? data.original_url[0] : data.original_url;
       setFormErrors({ form: msg });
     } finally {
       setSaving(false);
@@ -126,9 +114,8 @@ export default function LinkDetailsPage() {
   };
 
   const handleCopy = async () => {
-    const url = getShortUrl(link.short_code);
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(getShortUrl(link.short_code));
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {}
@@ -138,7 +125,6 @@ export default function LinkDetailsPage() {
     if (!qrContainerRef.current) return;
     const svg = qrContainerRef.current.querySelector('svg');
     if (!svg) return;
-
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -146,16 +132,14 @@ export default function LinkDetailsPage() {
     const size = 512;
     canvas.width = size;
     canvas.height = size;
-
     img.onload = () => {
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, size, size);
       ctx.drawImage(img, 0, 0, size, size);
-      const pngFile = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.download = `${link.short_code}-qr.png`;
-      downloadLink.href = pngFile;
-      downloadLink.click();
+      const a = document.createElement('a');
+      a.download = `${link.short_code}-qr.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
     };
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
@@ -166,12 +150,12 @@ export default function LinkDetailsPage() {
       await linksService.remove(id);
       navigate('/dashboard');
     } catch {
-      showToast('Failed to delete link', 'error');
+      showToast('Failed to delete', 'error');
       setDeleting(false);
     }
   };
 
-  if (loading) return <LoadingState message="Loading link details..." />;
+  if (loading) return <LoadingState message="Loading link..." />;
   if (error || !link) return <ErrorState message="Could not load this link." onRetry={load} />;
 
   const shortUrl = getShortUrl(link.short_code);
@@ -184,7 +168,7 @@ export default function LinkDetailsPage() {
   return (
     <div className="max-w-3xl mx-auto">
       {toast && (
-        <div className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-md shadow-lg text-white text-sm ${
+        <div className={`fixed top-20 right-6 z-50 px-3 py-2 rounded-md shadow-lg text-white text-xs ${
           toast.type === 'error' ? 'bg-danger' : 'bg-success'
         }`}>
           {toast.msg}
@@ -192,111 +176,101 @@ export default function LinkDetailsPage() {
       )}
 
       <div className="flex items-center gap-3 mb-6">
-        <Link to="/dashboard" className="btn btn-sm btn-outline">
-          <ArrowLeft className="w-4 h-4" /> Back
+        <Link to="/dashboard" className="btn btn-ghost btn-sm">
+          <ArrowLeft className="w-3.5 h-3.5" />
         </Link>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold text-ink-primary">Link Details</h1>
-          <p className="text-sm text-ink-muted">View and manage this short link.</p>
+        <div className="flex-1 min-w-0">
+          <h1 className="page-title">Link Details</h1>
+          <p className="text-xs text-ink-muted truncate">{link.original_url}</p>
         </div>
         <Badge variant={status.variant}>{status.label}</Badge>
       </div>
 
-      <div className="card mb-6">
-        <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted mb-2">
-          Short URL
-        </div>
+      <div className="card p-4 mb-4">
+        <div className="section-label mb-2">Short URL</div>
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <a href={shortUrl} target="_blank" rel="noreferrer" className="text-primary font-semibold text-lg break-all">
+          <a href={shortUrl} target="_blank" rel="noreferrer" className="text-sm font-semibold text-primary hover:underline break-all">
             {shortUrl}
           </a>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button onClick={handleCopy} className="btn btn-outline btn-sm">
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied' : 'Copy'}
             </button>
             <a href={shortUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
-              <ExternalLink className="w-4 h-4" /> Open
+              <ExternalLink className="w-3.5 h-3.5" /> Open
             </a>
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
-        <div className="card">
-          <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Clicks</div>
-          <div className="text-3xl font-bold text-ink-primary">{link.click_count}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div className="card p-4">
+          <div className="section-label mb-1">Clicks</div>
+          <div className="text-2xl font-semibold text-ink-primary tabular-nums">{link.click_count}</div>
         </div>
-        <div className="card">
-          <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Created</div>
-          <div className="text-sm text-ink-secondary">{new Date(link.created_at).toLocaleString()}</div>
+        <div className="card p-4">
+          <div className="section-label mb-1">Created</div>
+          <div className="text-xs text-ink-secondary">{new Date(link.created_at).toLocaleDateString()}</div>
         </div>
-        <div className="card">
-          <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Updated</div>
-          <div className="text-sm text-ink-secondary">{new Date(link.updated_at).toLocaleString()}</div>
+        <div className="card p-4">
+          <div className="section-label mb-1">Updated</div>
+          <div className="text-xs text-ink-secondary">{new Date(link.updated_at).toLocaleDateString()}</div>
         </div>
-        <div className="card">
-          <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Expiration</div>
-          <div className="text-sm text-ink-secondary">
-            {link.expires_at ? new Date(link.expires_at).toLocaleString() : 'No expiration set'}
+        <div className="card p-4">
+          <div className="section-label mb-1">Expiration</div>
+          <div className="text-xs text-ink-secondary">
+            {link.expires_at ? new Date(link.expires_at).toLocaleDateString() : 'Never'}
           </div>
         </div>
       </div>
 
-      <div className="card mb-6 flex items-start gap-6 flex-wrap">
-        <div>
-          <div className="text-xs font-semibold uppercase text-ink-muted mb-2">QR Code</div>
-          <div
-            ref={qrContainerRef}
-            className="bg-white p-3 border border-border rounded-md inline-block"
-          >
-            <QRCodeSVG value={shortUrl} size={140} level="M" fgColor="#15152A" />
+      <div className="card p-4 mb-4">
+        <div className="section-label mb-3">QR Code</div>
+        <div className="flex items-start gap-4 flex-wrap">
+          <div ref={qrContainerRef} className="bg-white p-2 border border-border rounded-md">
+            <QRCodeSVG value={shortUrl} size={120} level="M" fgColor="#1B2528" />
+          </div>
+          <div className="flex-1 min-w-[180px]">
+            <p className="text-xs text-ink-muted mb-3 leading-relaxed">
+              Scan this QR code to open the short link. Download and print anywhere.
+            </p>
+            <button onClick={handleDownloadQR} className="btn btn-outline btn-sm">
+              <Download className="w-3.5 h-3.5" /> Download PNG
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card p-4 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-sm font-semibold text-ink-primary">
+            {editing ? 'Edit Link' : 'Link Information'}
           </div>
           <button
-            onClick={handleDownloadQR}
-            className="btn btn-outline btn-sm mt-3 flex items-center gap-1.5"
-            type="button"
+            onClick={() => setEditing(!editing)}
+            className="btn btn-outline btn-sm"
           >
-            <Download className="w-3.5 h-3.5" /> Download PNG
+            {editing ? <X className="w-3.5 h-3.5" /> : <Pencil className="w-3.5 h-3.5" />}
+            {editing ? 'Cancel' : 'Edit'}
           </button>
-        </div>
-        <div className="text-sm text-ink-muted max-w-xs">
-          Scan this QR code to open the short link. Works on any phone camera. Download it to print or share.
-        </div>
-      </div>
-
-      <div className="card mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-ink-primary">
-            {editing ? 'Edit link' : 'Link information'}
-          </h2>
-          {!editing && (
-            <button onClick={() => setEditing(true)} className="btn btn-sm btn-outline">
-              <Pencil className="w-3.5 h-3.5" /> Edit
-            </button>
-          )}
-          {editing && (
-            <button onClick={() => { setEditing(false); setFormErrors({}); }} className="btn btn-sm btn-outline">
-              <X className="w-3.5 h-3.5" /> Cancel
-            </button>
-          )}
         </div>
 
         {!editing ? (
-          <div className="space-y-3 text-sm">
+          <div className="space-y-3">
             <div>
-              <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Original URL</div>
-              <div className="text-ink-secondary break-all">{link.original_url}</div>
+              <div className="section-label mb-1">Original URL</div>
+              <div className="text-sm text-ink-secondary break-all">{link.original_url}</div>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase text-ink-muted mb-1">Alias</div>
-              <div className="text-ink-secondary">{link.short_code}</div>
+              <div className="section-label mb-1">Alias</div>
+              <div className="text-sm text-ink-secondary">{link.short_code}</div>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSave} className="space-y-4">
+          <form onSubmit={handleSave} className="space-y-3">
             {formErrors.form && (
-              <div className="px-3 py-2 rounded-md bg-danger-light text-danger text-sm">
+              <div className="px-3 py-2 rounded-md bg-danger-light text-danger text-xs">
                 {formErrors.form}
               </div>
             )}
@@ -306,27 +280,27 @@ export default function LinkDetailsPage() {
               value={form.short_code} onChange={handleChange} error={formErrors.short_code} />
             <Input id="expires_at" name="expires_at" type="datetime-local" label="Expiration"
               value={form.expires_at} onChange={handleChange} error={formErrors.expires_at} />
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              <Save className="w-4 h-4" />
+            <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
+              <Save className="w-3.5 h-3.5" />
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </form>
         )}
       </div>
 
-      <div className="card flex flex-wrap gap-2 justify-between items-center">
-        <div className="flex gap-2 flex-wrap">
+      <div className="card p-4 flex flex-wrap gap-2 justify-between items-center">
+        <div className="flex gap-1.5 flex-wrap">
           <button onClick={handleToggle} disabled={toggling}
-            className={`btn ${link.is_active ? 'btn-outline' : 'btn-primary'}`}>
-            {link.is_active ? <PowerOff className="w-4 h-4" /> : <Power className="w-4 h-4" />}
-            {toggling ? 'Updating...' : link.is_active ? 'Disable Link' : 'Enable Link'}
+            className={`btn btn-sm ${link.is_active ? 'btn-outline' : 'btn-primary'}`}>
+            {link.is_active ? <PowerOff className="w-3.5 h-3.5" /> : <Power className="w-3.5 h-3.5" />}
+            {toggling ? 'Updating...' : link.is_active ? 'Disable' : 'Enable'}
           </button>
-          <Link to={`/analytics/${link.id}`} className="btn btn-outline">
-            <BarChart3 className="w-4 h-4" /> Analytics
+          <Link to={`/analytics/${link.id}`} className="btn btn-outline btn-sm">
+            <BarChart3 className="w-3.5 h-3.5" /> Analytics
           </Link>
         </div>
-        <button onClick={() => setConfirmDelete(true)} className="btn btn-danger-outline">
-          <Trash2 className="w-4 h-4" /> Delete Link
+        <button onClick={() => setConfirmDelete(true)} className="btn btn-danger-outline btn-sm">
+          <Trash2 className="w-3.5 h-3.5" /> Delete
         </button>
       </div>
 

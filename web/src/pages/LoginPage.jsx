@@ -5,102 +5,71 @@ import { Input } from '../components';
 import { LogIn } from 'lucide-react';
 
 export default function LoginPage() {
-  const { login, isAuthenticated, loading: authLoading } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // If already logged in, bounce to dashboard
   if (isAuthenticated) {
     const to = location.state?.from?.pathname || '/dashboard';
     return <Navigate to={to} replace />;
   }
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError('');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!form.username.trim() || !form.password) {
-      setError('Please enter both username and password.');
-      return;
-    }
-
+    if (!form.username.trim() || !form.password) return setError('Please fill in both fields.');
     setSubmitting(true);
     try {
       await login(form);
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      const msg =
-        err.response?.data?.detail ||
-        'Invalid credentials. Please try again.';
-      setError(msg);
+      setError(err.response?.data?.detail || 'Invalid credentials.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto px-6 py-12">
-      <div className="card auth-form relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-        <h2 className="text-2xl font-bold text-center text-ink-primary mt-2 mb-1">
-          Welcome back
-        </h2>
-        <p className="text-center text-ink-muted text-sm mb-6">
-          Log in to manage your links
-        </p>
+    <div className="max-w-sm mx-auto px-6 py-16">
+      <div className="card p-6">
+        <div className="text-center mb-6">
+          <div className="w-10 h-10 mx-auto rounded-md bg-primary flex items-center justify-center text-white text-base font-bold mb-3">
+            S
+          </div>
+          <h1 className="text-lg font-semibold text-ink-primary">Welcome back</h1>
+          <p className="text-xs text-ink-muted mt-1">Log in to manage your links</p>
+        </div>
 
         {error && (
-          <div className="mb-4 px-3 py-2 rounded-md bg-danger-light text-danger text-sm">
+          <div className="mb-4 px-3 py-2 rounded-md bg-danger-light text-danger text-xs">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <Input
-            id="username"
-            name="username"
-            label="Username"
+        <form onSubmit={handleSubmit} className="space-y-3" noValidate>
+          <Input id="username" name="username" label="Username"
             placeholder="Enter your username"
             value={form.username}
-            onChange={handleChange}
-            autoComplete="username"
-            className="mb-4"
-          />
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            label="Password"
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+            autoComplete="username" autoFocus />
+          <Input id="password" name="password" type="password" label="Password"
             placeholder="Enter your password"
             value={form.password}
-            onChange={handleChange}
-            autoComplete="current-password"
-            className="mb-4"
-          />
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            autoComplete="current-password" />
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full"
-            disabled={submitting || authLoading}
-          >
-            <LogIn className="w-4 h-4" />
+          <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+            <LogIn className="w-3.5 h-3.5" />
             {submitting ? 'Signing in...' : 'Log In'}
           </button>
         </form>
 
-        <div className="text-center text-sm text-ink-secondary mt-6">
-          Don&apos;t have an account?{' '}
-          <Link to="/register" className="font-semibold text-primary">
-            Register
-          </Link>
+        <div className="text-center text-xs text-ink-secondary mt-5">
+          Don't have an account?{' '}
+          <Link to="/register" className="font-medium text-primary hover:underline">Register</Link>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Filter, SortAsc } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import {
   LoadingState, ErrorState, EmptyState, Pagination,
   LinkRow, LinkCard, ConfirmDialog,
@@ -31,13 +31,12 @@ export default function LinksPage() {
       if (search.trim()) params.search = search.trim();
       if (status) params.status = status;
       if (sort) params.sort = sort;
-
       const data = await linksService.list(params);
       setLinks(data.results || []);
       setCount(data.count || 0);
       setHasNext(!!data.next);
       setHasPrev(!!data.previous);
-    } catch (err) {
+    } catch {
       setError(true);
     } finally {
       setLoading(false);
@@ -45,13 +44,10 @@ export default function LinksPage() {
   }, [page, search, status, sort]);
 
   useEffect(() => {
-    const timer = setTimeout(() => loadLinks(), 300);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => loadLinks(), 300);
+    return () => clearTimeout(t);
   }, [loadLinks]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, status, sort]);
+  useEffect(() => { setPage(1); }, [search, status, sort]);
 
   const handleDeleteConfirm = async () => {
     if (!confirmDelete) return;
@@ -61,86 +57,57 @@ export default function LinksPage() {
       setConfirmDelete(null);
       loadLinks();
     } catch {
-      alert('Failed to delete link. Please try again.');
+      alert('Failed to delete link.');
     } finally {
       setDeleting(false);
     }
   };
 
-  const clearFilters = () => {
-    setSearch('');
-    setStatus('');
-    setSort('newest');
-  };
-
-  const hasActiveFilters = search || status || sort !== 'newest';
+  const hasFilters = search || status || sort !== 'newest';
 
   return (
     <div>
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-ink-primary">Links</h1>
-          <p className="text-sm text-ink-muted">
-            {count > 0 ? `${count} ${count === 1 ? 'link' : 'links'} in your account` : 'Manage all your short links'}
+          <h1 className="page-title">Links</h1>
+          <p className="page-subtitle">
+            {count > 0 ? `${count} ${count === 1 ? 'link' : 'links'}` : 'Manage all your short links'}
           </p>
         </div>
-        <Link to="/create-link" className="btn btn-primary">
-          <Plus className="w-4 h-4" />
+        <Link to="/create-link" className="btn btn-primary btn-sm">
+          <Plus className="w-3.5 h-3.5" />
           Create Link
         </Link>
       </div>
 
-      {/* Filters */}
-      <div className="card p-4 mb-6">
-        <div className="flex flex-wrap items-end gap-3">
-          <div className="flex-1 min-w-[220px]">
-            <label className="label flex items-center gap-1.5">
-              <Search className="w-3.5 h-3.5" /> Search
-            </label>
+      <div className="card p-3 mb-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-muted pointer-events-none" />
             <input
               type="text"
-              placeholder="Search by short code or URL"
+              placeholder="Search links..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input"
+              className="input pl-8"
             />
           </div>
-          <div className="min-w-[140px]">
-            <label className="label flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5" /> Status
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="input"
-            >
-              <option value="">All</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="expired">Expired</option>
-            </select>
-          </div>
-          <div className="min-w-[160px]">
-            <label className="label flex items-center gap-1.5">
-              <SortAsc className="w-3.5 h-3.5" /> Sort
-            </label>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="input"
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="clicks">Most Clicks</option>
-              <option value="least_clicks">Least Clicks</option>
-            </select>
-          </div>
-          {hasActiveFilters && (
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="input w-auto">
+            <option value="">All status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="expired">Expired</option>
+          </select>
+          <select value={sort} onChange={(e) => setSort(e.target.value)} className="input w-auto">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="clicks">Most clicks</option>
+            <option value="least_clicks">Least clicks</option>
+          </select>
+          {hasFilters && (
             <button
-              onClick={clearFilters}
-              className="btn btn-outline"
-              type="button"
+              onClick={() => { setSearch(''); setStatus(''); setSort('newest'); }}
+              className="btn btn-ghost btn-sm"
             >
               Clear
             </button>
@@ -148,34 +115,27 @@ export default function LinksPage() {
         </div>
       </div>
 
-      {/* Content */}
       {loading ? (
         <LoadingState message="Loading links..." />
       ) : error ? (
         <ErrorState message="Failed to load links." onRetry={loadLinks} />
       ) : links.length === 0 ? (
         <EmptyState
-          title={hasActiveFilters ? 'No links match your filters' : 'No links yet'}
-          description={
-            hasActiveFilters
-              ? 'Try adjusting your search or filters.'
-              : 'Create your first short link to get started.'
-          }
-          actionLabel={hasActiveFilters ? undefined : '+ Create Link'}
-          actionTo={hasActiveFilters ? undefined : '/create-link'}
+          title={hasFilters ? 'No links match your filters' : 'No links yet'}
+          description={hasFilters ? 'Try adjusting your search or filters.' : 'Create your first short link to get started.'}
+          actionLabel={hasFilters ? undefined : 'Create Link'}
+          actionTo={hasFilters ? undefined : '/create-link'}
         />
       ) : (
         <>
-          {/* Desktop table */}
-          <div className="hidden md:block card p-0 overflow-hidden">
+          <div className="hidden md:block card overflow-hidden">
             <table className="w-full">
-              <thead className="bg-surface-muted">
-                <tr className="text-left text-xs uppercase tracking-wide text-ink-secondary">
-                  <th className="p-4 font-semibold">Short URL</th>
-                  <th className="p-4 font-semibold">Original URL</th>
-                  <th className="p-4 font-semibold">Status</th>
-                  <th className="p-4 font-semibold">Clicks</th>
-                  <th className="p-4 font-semibold">Actions</th>
+              <thead>
+                <tr className="border-b border-border bg-surface-muted">
+                  <th className="px-4 py-2.5 text-left section-label">Link</th>
+                  <th className="px-4 py-2.5 text-left section-label">Status</th>
+                  <th className="px-4 py-2.5 text-left section-label">Clicks</th>
+                  <th className="px-4 py-2.5 text-right section-label">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,8 +146,7 @@ export default function LinksPage() {
             </table>
           </div>
 
-          {/* Mobile cards */}
-          <div className="md:hidden space-y-3">
+          <div className="md:hidden space-y-2.5">
             {links.map((link) => (
               <LinkCard key={link.id} link={link} onDelete={setConfirmDelete} />
             ))}

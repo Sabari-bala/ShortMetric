@@ -24,9 +24,11 @@ function CopyIconButton({ text }) {
     <button
       type="button"
       onClick={handleCopy}
-      title={copied ? 'Copied' : 'Copy short URL'}
-      className={`relative group/copy w-6 h-6 inline-flex items-center justify-center rounded-md transition-colors duration-100 ${
-        copied ? 'text-success bg-success-light' : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary'
+      aria-label={copied ? 'Copied' : 'Copy URL'}
+      className={`w-6 h-6 inline-flex items-center justify-center rounded-md transition-colors duration-100 ${
+        copied
+          ? 'text-success bg-success-light'
+          : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary'
       }`}
     >
       {copied ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <Copy className="w-3 h-3" strokeWidth={2} />}
@@ -34,39 +36,23 @@ function CopyIconButton({ text }) {
   );
 }
 
-function ActionLink({ to, icon: Icon, label }) {
-  return (
-    <Link
-      to={to}
-      className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-xs font-medium
-                 text-ink-secondary bg-white border border-border
-                 hover:bg-primary-light hover:text-primary hover:border-primary/30
-                 transition-colors duration-100 whitespace-nowrap"
-    >
-      <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-      <span className="hidden xl:inline">{label}</span>
-    </Link>
-  );
-}
-
-function ActionIcon({ href, onClick, icon: Icon, label, danger = false }) {
-  const base = 'inline-flex items-center justify-center w-7 h-7 rounded-md bg-white border border-border transition-colors duration-100';
+function ActionButton({ to, href, onClick, icon: Icon, label, danger = false }) {
+  const base =
+    'inline-flex items-center justify-center gap-1.5 h-7 px-2.5 rounded-md text-xs font-medium whitespace-nowrap border transition-colors duration-100';
   const styles = danger
-    ? 'text-ink-muted hover:bg-danger-light hover:text-danger hover:border-danger/30'
-    : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary hover:border-border-strong';
+    ? 'text-ink-secondary bg-white border-border hover:bg-danger-light hover:text-danger hover:border-danger/30'
+    : 'text-ink-secondary bg-white border-border hover:bg-primary-light hover:text-primary hover:border-primary/30';
 
-  if (href) {
-    return (
-      <a href={href} target="_blank" rel="noreferrer" className={`${base} ${styles}`} aria-label={label} title={label}>
-        <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-      </a>
-    );
-  }
-  return (
-    <button type="button" onClick={onClick} className={`${base} ${styles}`} aria-label={label} title={label}>
-      <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-    </button>
+  const content = (
+    <>
+      <Icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.75} />
+      <span>{label}</span>
+    </>
   );
+
+  if (to) return <Link to={to} className={`${base} ${styles}`}>{content}</Link>;
+  if (href) return <a href={href} target="_blank" rel="noreferrer" className={`${base} ${styles}`}>{content}</a>;
+  return <button type="button" onClick={onClick} className={`${base} ${styles}`}>{content}</button>;
 }
 
 function StatusLabel({ link }) {
@@ -88,6 +74,7 @@ export default function LinkRow({ link, onDelete }) {
 
   return (
     <tr className="border-b border-border last:border-0 hover:bg-surface-hover/60 transition-colors duration-100">
+      {/* Link — takes remaining space */}
       <td className="py-3.5 pl-5 pr-3 min-w-0">
         <div className="flex items-center gap-1.5 min-w-0">
           <a
@@ -105,22 +92,23 @@ export default function LinkRow({ link, onDelete }) {
         </div>
       </td>
 
-      <td className="py-3.5 px-3 w-24">
+      {/* Status — fixed narrow */}
+      <td className="py-3.5 px-3 w-[110px]">
         <StatusLabel link={link} />
       </td>
 
-      <td className="py-3.5 px-3 w-24">
-        <div className="text-sm font-medium text-ink-primary tabular-nums">
-          {link.click_count}
-        </div>
+      {/* Clicks — fixed narrow */}
+      <td className="py-3.5 px-3 w-[80px]">
+        <span className="text-sm font-medium text-ink-primary tabular-nums">{link.click_count}</span>
       </td>
 
-      <td className="py-3.5 pl-3 pr-5">
-        <div className="flex items-center justify-end gap-1.5">
-          <ActionLink to={`/analytics/${link.id}`} icon={BarChart3} label="Analytics" />
-          <ActionLink to={`/link-details/${link.id}`} icon={FileText} label="Details" />
-          <ActionIcon href={shortUrl} icon={ExternalLink} label="Open link" />
-          <ActionIcon onClick={() => onDelete(link.id)} icon={Trash2} label="Delete" danger />
+      {/* Actions — auto-shrinks to fit buttons, LEFT-aligned */}
+      <td className="py-3.5 pl-3 pr-5 whitespace-nowrap">
+        <div className="flex items-center gap-1.5">
+          <ActionButton to={`/analytics/${link.id}`} icon={BarChart3} label="Analytics" />
+          <ActionButton to={`/link-details/${link.id}`} icon={FileText} label="Details" />
+          <ActionButton href={shortUrl} icon={ExternalLink} label="Open" />
+          <ActionButton onClick={() => onDelete(link.id)} icon={Trash2} label="Delete" danger />
         </div>
       </td>
     </tr>

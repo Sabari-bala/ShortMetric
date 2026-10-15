@@ -157,9 +157,9 @@ export default function DashboardPage() {
               <thead>
                 <tr className="border-b border-border bg-surface-muted">
                   <th className="py-3 pl-5 pr-3 text-left section-label">Link</th>
-                  <th className="py-3 px-3 text-left section-label w-24">Status</th>
-                  <th className="py-3 px-3 text-left section-label w-24">Clicks</th>
-                  <th className="py-3 pl-3 pr-5 text-right section-label">Actions</th>
+                  <th className="py-3 px-3 text-left section-label w-[110px]">Status</th>
+                  <th className="py-3 px-3 text-left section-label w-[80px]">Clicks</th>
+                  <th className="py-3 pl-3 pr-5 text-left section-label">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -199,6 +199,8 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+
 
 
 

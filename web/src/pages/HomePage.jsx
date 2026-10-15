@@ -15,7 +15,7 @@ export default function HomePage() {
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'radial-gradient(circle at 20% 30%, #5B4AEF 0%, transparent 40%), radial-gradient(circle at 80% 70%, #7C6FF2 0%, transparent 40%)',
+              'radial-gradient(circle at 20% 30%, #0F766E 0%, transparent 40%), radial-gradient(circle at 80% 70%, #14B8A6 0%, transparent 40%)',
           }}
         />
         <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
@@ -249,3 +249,4 @@ function PreviewRow({ short, clicks, status }) {
     </div>
   );
 }
+

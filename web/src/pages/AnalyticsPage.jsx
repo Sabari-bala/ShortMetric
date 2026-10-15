@@ -12,7 +12,7 @@ import {
 } from '../components';
 import { analyticsService } from '../services/analyticsService';
 
-const CHART_COLORS = ['#5B4AEF', '#7C6FF2', '#16A34A', '#D97706', '#DC2626', '#2563EB', '#6B6F82'];
+const CHART_COLORS = ['#0F766E', '#14B8A6', '#16A34A', '#D97706', '#DC2626', '#2563EB', '#6B6F82'];
 
 export default function AnalyticsPage() {
   const { id } = useParams();
@@ -101,9 +101,9 @@ function OverallAnalytics({ data }) {
                     <Line
                       type="monotone"
                       dataKey="clicks"
-                      stroke="#5B4AEF"
+                      stroke="#0F766E"
                       strokeWidth={2}
-                      dot={{ fill: '#5B4AEF', r: 3 }}
+                      dot={{ fill: '#0F766E', r: 3 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -226,9 +226,9 @@ function LinkAnalytics({ data }) {
                   <Line
                     type="monotone"
                     dataKey="clicks"
-                    stroke="#5B4AEF"
+                    stroke="#0F766E"
                     strokeWidth={2}
-                    dot={{ fill: '#5B4AEF', r: 3 }}
+                    dot={{ fill: '#0F766E', r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -295,7 +295,7 @@ function BreakdownCard({ title, data, type = 'bar' }) {
               <Tooltip
                 contentStyle={{ borderRadius: 8, border: '1px solid #E5E7EF' }}
               />
-              <Bar dataKey="value" fill="#5B4AEF" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" fill="#0F766E" radius={[4, 4, 0, 0]} />
             </BarChart>
           )}
         </ResponsiveContainer>
@@ -348,3 +348,4 @@ function RecentClicksTable({ clicks, showLink = false }) {
     </div>
   );
 }
+

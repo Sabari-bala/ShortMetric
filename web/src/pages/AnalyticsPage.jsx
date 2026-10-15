@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -8,23 +8,33 @@ import { MousePointerClick, Link2, CheckCircle2, XCircle, ArrowLeft, BarChart3 }
 import { MetricCard, LoadingState, ErrorState, EmptyState, Badge } from '../components';
 import { analyticsService } from '../services/analyticsService';
 
-// Distinct color palette for charts — cycles so single-value charts aren't all teal
 const CHART_COLORS = ['#0F766E', '#D97706', '#2563EB', '#DC2626', '#7C3AED', '#0891B2', '#65A30D', '#DB2777'];
 
 export default function AnalyticsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(false);
+    setNotFound(false);
     try {
       const result = id ? await analyticsService.forLink(id) : await analyticsService.dashboard();
+      if (!result) {
+        setNotFound(true);
+        return;
+      }
       setData(result);
-    } catch {
-      setError(true);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -33,14 +43,50 @@ export default function AnalyticsPage() {
   useEffect(() => { load(); }, [load]);
 
   if (loading) return <LoadingState message="Loading analytics..." />;
+
+  if (notFound) {
+    return (
+      <div className="max-w-md mx-auto text-center py-20">
+        <div className="w-12 h-12 mx-auto rounded-full bg-warning-light flex items-center justify-center mb-4">
+          <BarChart3 className="w-5 h-5 text-warning" strokeWidth={2} />
+        </div>
+        <h2 className="text-base font-semibold text-ink-primary mb-2">Link not found</h2>
+        <p className="text-sm text-ink-muted mb-6">
+          This link may have been deleted or you don't have access to it.
+        </p>
+        <button onClick={() => navigate('/dashboard')} className="btn btn-primary btn-sm">
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
+
   if (error || !data) return <ErrorState message="Could not load analytics." onRetry={load} />;
+
+  // Sanity check: if viewing a specific link, ensure we have a valid link object
+  if (id && (!data.link || !data.link.short_code)) {
+    return (
+      <div className="max-w-md mx-auto text-center py-20">
+        <div className="w-12 h-12 mx-auto rounded-full bg-warning-light flex items-center justify-center mb-4">
+          <BarChart3 className="w-5 h-5 text-warning" strokeWidth={2} />
+        </div>
+        <h2 className="text-base font-semibold text-ink-primary mb-2">Link not found</h2>
+        <p className="text-sm text-ink-muted mb-6">
+          This link may have been deleted or you don't have access to it.
+        </p>
+        <button onClick={() => navigate('/dashboard')} className="btn btn-primary btn-sm">
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return id ? <LinkAnalytics data={data} /> : <OverallAnalytics data={data} />;
 }
 
 function OverallAnalytics({ data }) {
-  const clicks = (data.clicks_over_time || []).map((d) => ({ date: d.date, clicks: d.count }));
-  const hasClicks = data.total_clicks > 0;
+  const clicks = (data?.clicks_over_time || []).map((d) => ({ date: d.date, clicks: d.count }));
+  const hasClicks = (data?.total_clicks || 0) > 0;
 
   return (
     <div>
@@ -50,10 +96,10 @@ function OverallAnalytics({ data }) {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <MetricCard label="Total Links" value={data.total_links} icon={Link2} accent="primary" />
-        <MetricCard label="Total Clicks" value={data.total_clicks} icon={MousePointerClick} accent="primary" />
-        <MetricCard label="Active" value={data.active_links} icon={CheckCircle2} accent="success" />
-        <MetricCard label="Expired / Off" value={data.expired_links} icon={XCircle} accent="warning" />
+        <MetricCard label="Total Links" value={data?.total_links ?? 0} icon={Link2} accent="primary" />
+        <MetricCard label="Total Clicks" value={data?.total_clicks ?? 0} icon={MousePointerClick} accent="primary" />
+        <MetricCard label="Active" value={data?.active_links ?? 0} icon={CheckCircle2} accent="success" />
+        <MetricCard label="Expired / Off" value={data?.expired_links ?? 0} icon={XCircle} accent="warning" />
       </div>
 
       {!hasClicks ? (
@@ -82,17 +128,14 @@ function OverallAnalytics({ data }) {
                   <CartesianGrid strokeDasharray="3 3" stroke="#E3E8E5" vertical={false} />
                   <XAxis dataKey="date" stroke="#7C888A" fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke="#7C888A" fontSize={10} allowDecimals={false} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{ borderRadius: 8, border: '1px solid #E3E8E5', fontSize: 12 }}
-                    labelFormatter={(v) => `Date: ${v}`}
-                  />
+                  <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #E3E8E5', fontSize: 12 }} />
                   <Line type="monotone" dataKey="clicks" stroke="#0F766E" strokeWidth={2} dot={{ fill: '#0F766E', r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {data.top_links && data.top_links.length > 0 && (
+          {data?.top_links?.length > 0 && (
             <div className="card p-4 mb-4">
               <div className="text-sm font-semibold text-ink-primary mb-3">Top performing links</div>
               <div className="space-y-1">
@@ -118,7 +161,7 @@ function OverallAnalytics({ data }) {
             </div>
           )}
 
-          {data.recent_clicks && data.recent_clicks.length > 0 && (
+          {data?.recent_clicks?.length > 0 && (
             <RecentClicks clicks={data.recent_clicks} showLink />
           )}
         </>
@@ -129,12 +172,14 @@ function OverallAnalytics({ data }) {
 
 function LinkAnalytics({ data }) {
   const link = data.link;
-  const clicks = (data.clicks_over_time || []).map((d) => ({ date: d.date, clicks: d.count }));
-  const devices = (data.device_breakdown || []).map((d) => ({ name: d.device_category || 'Unknown', value: d.count }));
-  const browsers = (data.browser_breakdown || []).map((d) => ({ name: d.browser || 'Unknown', value: d.count }));
-  const os = (data.os_breakdown || []).map((d) => ({ name: d.operating_system || 'Unknown', value: d.count }));
+  const clicks = (data?.clicks_over_time || []).map((d) => ({ date: d.date, clicks: d.count }));
+  const devices = (data?.device_breakdown || []).map((d) => ({ name: d.device_category || 'Unknown', value: d.count }));
+  const browsers = (data?.browser_breakdown || []).map((d) => ({ name: d.browser || 'Unknown', value: d.count }));
+  const os = (data?.os_breakdown || []).map((d) => ({ name: d.operating_system || 'Unknown', value: d.count }));
 
-  const status = !link.is_active ? { label: 'Disabled', variant: 'danger' } : { label: 'Active', variant: 'success' };
+  const status = !link.is_active
+    ? { label: 'Disabled', variant: 'danger' }
+    : { label: 'Active', variant: 'success' };
 
   return (
     <div>
@@ -150,7 +195,7 @@ function LinkAnalytics({ data }) {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <MetricCard label="Total Clicks" value={data.total_clicks} icon={MousePointerClick} accent="primary" />
+        <MetricCard label="Total Clicks" value={data?.total_clicks ?? 0} icon={MousePointerClick} accent="primary" />
       </div>
 
       {data.total_clicks === 0 ? (
@@ -183,14 +228,15 @@ function LinkAnalytics({ data }) {
             </div>
           </div>
 
-          {/* 3 breakdowns — inline, no empty space */}
           <div className="grid md:grid-cols-3 gap-4 mb-4">
             <Breakdown title="Devices" data={devices} type="pie" />
             <Breakdown title="Browsers" data={browsers} type="bar" />
             <Breakdown title="Operating Systems" data={os} type="bar" />
           </div>
 
-          <RecentClicks clicks={data.recent_clicks} />
+          {data?.recent_clicks?.length > 0 && (
+            <RecentClicks clicks={data.recent_clicks} />
+          )}
         </>
       )}
     </div>
@@ -198,8 +244,6 @@ function LinkAnalytics({ data }) {
 }
 
 function Breakdown({ title, data, type = 'bar' }) {
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-
   if (!data || data.length === 0) {
     return (
       <div className="card p-4">
@@ -209,7 +253,7 @@ function Breakdown({ title, data, type = 'bar' }) {
     );
   }
 
-  // Use varied colors even for a single data point
+  const total = data.reduce((sum, d) => sum + d.value, 0);
   const colorFor = (i) => CHART_COLORS[i % CHART_COLORS.length];
 
   return (

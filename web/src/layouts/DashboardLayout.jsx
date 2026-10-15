@@ -81,7 +81,6 @@ export default function DashboardLayout() {
         ))}
       </nav>
 
-      {/* ChatGPT-style user menu */}
       <div className="p-3 border-t border-border relative" ref={menuRef}>
         {userMenuOpen && (
           <div className="absolute bottom-full left-3 right-3 mb-2 bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
@@ -94,6 +93,13 @@ export default function DashboardLayout() {
             <div className="p-1">
               <button
                 onClick={() => { setUserMenuOpen(false); navigate('/profile'); }}
+                className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-[13px] font-medium text-ink-secondary hover:bg-surface-hover hover:text-ink-primary transition-colors"
+              >
+                <User className="w-3.5 h-3.5" strokeWidth={1.75} />
+                Profile
+              </button>
+              <button
+                onClick={() => { setUserMenuOpen(false); navigate('/profile?tab=security'); }}
                 className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-[13px] font-medium text-ink-secondary hover:bg-surface-hover hover:text-ink-primary transition-colors"
               >
                 <Settings className="w-3.5 h-3.5" strokeWidth={1.75} />

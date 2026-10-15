@@ -45,7 +45,7 @@ class Command(BaseCommand):
     help = 'Seed demo links and clicks for ShortMetric analytics.'
 
     def add_arguments(self, parser):
-        parser.add_argument('--user', default='testuser', help='Username (default: testuser)')
+        parser.add_argument('--user', default='SabariBalaMR', help='Username (default: testuser)')
         parser.add_argument('--reset', action='store_true', help='Replace existing demo links')
 
     def handle(self, *args, **options):
@@ -120,3 +120,4 @@ class Command(BaseCommand):
         ))
         self.stdout.write('')
         self.stdout.write('Refresh http://localhost:5173/analytics to see the charts.')
+

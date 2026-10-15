@@ -70,3 +70,17 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Hide browser-native password reveal icons (Edge, Chrome, Safari) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-strong-password-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}

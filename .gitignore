@@ -17,3 +17,6 @@ update_ui.ps1
 web/node_modules
 web/dist
 web/.env
+
+# README backups
+README.backup.*.md

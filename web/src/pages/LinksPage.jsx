@@ -128,14 +128,14 @@ export default function LinksPage() {
         />
       ) : (
         <>
-          <div className="hidden md:block card overflow-hidden">
+          <div className="hidden lg:block card overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-surface-muted">
-                  <th className="px-5 py-3 text-left section-label">Link</th>
-                  <th className="px-5 py-3 text-left section-label">Status</th>
-                  <th className="px-5 py-3 text-left section-label">Clicks</th>
-                  <th className="px-5 py-3 text-right section-label">Actions</th>
+                  <th className="py-3 pl-5 pr-3 text-left section-label">Link</th>
+                  <th className="py-3 px-3 text-left section-label w-24">Status</th>
+                  <th className="py-3 px-3 text-left section-label w-24">Clicks</th>
+                  <th className="py-3 pl-3 pr-5 text-right section-label">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -146,7 +146,7 @@ export default function LinksPage() {
             </table>
           </div>
 
-          <div className="md:hidden space-y-2.5">
+          <div className="lg:hidden space-y-2.5">
             {links.map((link) => (
               <LinkCard key={link.id} link={link} onDelete={setConfirmDelete} />
             ))}
@@ -174,4 +174,7 @@ export default function LinksPage() {
     </div>
   );
 }
+
+
+
 

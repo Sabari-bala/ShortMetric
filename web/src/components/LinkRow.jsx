@@ -1,7 +1,38 @@
 ﻿import { Link } from 'react-router-dom';
-import { BarChart3, FileText, Trash2, ExternalLink } from 'lucide-react';
-import CopyButton from './CopyButton';
+import { BarChart3, FileText, Trash2, ExternalLink, Copy, Check } from 'lucide-react';
+import { useState } from 'react';
 import { getShortUrl } from '../lib/shortUrl';
+
+function CopyIconButton({ text }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard) await navigator.clipboard.writeText(text);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {}
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title={copied ? 'Copied' : 'Copy short URL'}
+      className={`relative group/copy w-6 h-6 inline-flex items-center justify-center rounded-md transition-colors duration-100 ${
+        copied ? 'text-success bg-success-light' : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary'
+      }`}
+    >
+      {copied ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <Copy className="w-3 h-3" strokeWidth={2} />}
+    </button>
+  );
+}
 
 function ActionLink({ to, icon: Icon, label }) {
   return (
@@ -13,40 +44,27 @@ function ActionLink({ to, icon: Icon, label }) {
                  transition-colors duration-100 whitespace-nowrap"
     >
       <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-      <span>{label}</span>
+      <span className="hidden xl:inline">{label}</span>
     </Link>
   );
 }
 
 function ActionIcon({ href, onClick, icon: Icon, label, danger = false }) {
-  const base = `relative group/act inline-flex items-center justify-center w-7 h-7 rounded-md
-                bg-white border border-border transition-colors duration-100`;
+  const base = 'inline-flex items-center justify-center w-7 h-7 rounded-md bg-white border border-border transition-colors duration-100';
   const styles = danger
     ? 'text-ink-muted hover:bg-danger-light hover:text-danger hover:border-danger/30'
     : 'text-ink-muted hover:bg-surface-hover hover:text-ink-primary hover:border-border-strong';
 
-  const content = (
-    <>
-      <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-      <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2
-                       px-2 py-1 rounded-md bg-ink-primary text-white text-2xs font-medium
-                       whitespace-nowrap opacity-0 group-hover/act:opacity-100
-                       transition-opacity duration-150 z-10">
-        {label}
-      </span>
-    </>
-  );
-
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noreferrer" className={`${base} ${styles}`} aria-label={label}>
-        {content}
+      <a href={href} target="_blank" rel="noreferrer" className={`${base} ${styles}`} aria-label={label} title={label}>
+        <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
       </a>
     );
   }
   return (
-    <button type="button" onClick={onClick} className={`${base} ${styles}`} aria-label={label}>
-      {content}
+    <button type="button" onClick={onClick} className={`${base} ${styles}`} aria-label={label} title={label}>
+      <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
     </button>
   );
 }
@@ -57,9 +75,8 @@ function StatusLabel({ link }) {
     : link.is_expired
     ? { label: 'Expired', dot: 'bg-warning', text: 'text-warning' }
     : { label: 'Active', dot: 'bg-success', text: 'text-success' };
-
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium whitespace-nowrap">
       <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
       <span className={status.text}>{status.label}</span>
     </span>
@@ -71,8 +88,8 @@ export default function LinkRow({ link, onDelete }) {
 
   return (
     <tr className="border-b border-border last:border-0 hover:bg-surface-hover/60 transition-colors duration-100">
-      <td className="px-5 py-3.5">
-        <div className="flex items-center gap-2 min-w-0">
+      <td className="py-3.5 pl-5 pr-3 min-w-0">
+        <div className="flex items-center gap-1.5 min-w-0">
           <a
             href={shortUrl}
             target="_blank"
@@ -81,19 +98,24 @@ export default function LinkRow({ link, onDelete }) {
           >
             /{link.short_code}
           </a>
-          <CopyButton text={shortUrl} label="" />
+          <CopyIconButton text={shortUrl} />
         </div>
         <div className="text-xs text-ink-muted truncate mt-1" title={link.original_url}>
           {link.original_url}
         </div>
       </td>
-      <td className="px-5 py-3.5">
+
+      <td className="py-3.5 px-3 w-24">
         <StatusLabel link={link} />
       </td>
-      <td className="px-5 py-3.5 text-sm font-medium text-ink-primary tabular-nums">
-        {link.click_count}
+
+      <td className="py-3.5 px-3 w-24">
+        <div className="text-sm font-medium text-ink-primary tabular-nums">
+          {link.click_count}
+        </div>
       </td>
-      <td className="px-5 py-3.5">
+
+      <td className="py-3.5 pl-3 pr-5">
         <div className="flex items-center justify-end gap-1.5">
           <ActionLink to={`/analytics/${link.id}`} icon={BarChart3} label="Analytics" />
           <ActionLink to={`/link-details/${link.id}`} icon={FileText} label="Details" />

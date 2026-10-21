@@ -20,3 +20,8 @@ web/.env
 
 # README backups
 README.backup.*.md
+
+# Don't ignore deploy files
+!backend/Procfile
+!backend/build.sh
+!backend/runtime.txt

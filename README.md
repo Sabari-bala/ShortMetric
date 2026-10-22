@@ -10,7 +10,7 @@ ShortMetric is a full-stack link management and click analytics platform built t
 - **Backend API:** https://shortmetric-api.onrender.com
 - **Source Code:** https://github.com/Sabari-bala/ShortMetric
 
-**Demo account**
+**Demo account:**
 
 - Username: `SabariBalaMR`
 - Password: `ShortMetric@2026`
@@ -152,11 +152,8 @@ Users can create short URLs, manage custom aliases, generate QR codes, control l
 │ PostgreSQL / SQLite          │
 │ Users, Links, Click Events   │
 └──────────────────────────────┘
-```
-
-### Public Redirect Flow
-
-```text
+Public Redirect Flow
+text
 Visitor opens a short URL
           │
           ▼
@@ -173,56 +170,66 @@ Record click metadata
           │
           ▼
 Redirect to the original URL
-```
-
-## 🗄️ Database Design
-
-### User
-
+🗄️ Database Design
+User
 Django's built-in user model manages user accounts and authentication.
 
-### Profile
-
+Profile
 A one-to-one relationship with the Django user stores additional profile information.
 
-### Link
-
+Link
 Stores short-link configuration and ownership.
 
-- `user` — foreign key to the link owner.
-- `original_url` — destination URL.
-- `short_code` — unique short code.
-- `is_active` — enabled or disabled state.
-- `expires_at` — optional expiration timestamp.
-- `created_at` and `updated_at` — timestamps.
+user — foreign key to the link owner.
 
-### Click
+original_url — destination URL.
 
+short_code — unique short code.
+
+is_active — enabled or disabled state.
+
+expires_at — optional expiration timestamp.
+
+created_at and updated_at — timestamps.
+
+Click
 Stores click-event information for analytics.
 
-- `link` — foreign key to the associated link.
-- `clicked_at` — click timestamp.
-- `referrer` — referring source.
-- `user_agent` — browser user-agent string.
-- `browser` — detected browser.
-- `device_category` — detected device category.
-- `operating_system` — detected operating system.
+link — foreign key to the associated link.
 
-## 💡 Skills Demonstrated
+clicked_at — click timestamp.
 
-- **Frontend engineering:** React component architecture, routing, responsive UI, and state management.
-- **API integration:** Connecting a React frontend to a Django REST API using Axios and TanStack Query.
-- **Backend engineering:** REST API design, request validation, authentication, and business logic.
-- **Database management:** Relational data modeling, ORM queries, and PostgreSQL integration.
-- **Analytics:** Capturing click events and visualizing usage data.
-- **Application security:** Authentication, authorization, and per-user data isolation.
-- **Production deployment:** Configuring separate frontend and backend services.
-- **Debugging:** Resolving deployment configuration, CORS, environment-variable, and encoding issues.
-- **Developer workflow:** Git, GitHub, environment configuration, and production builds.
+referrer — referring source.
 
-## 📁 Project Structure
+user_agent — browser user-agent string.
 
-```text
+browser — detected browser.
+
+device_category — detected device category.
+
+operating_system — detected operating system.
+
+💡 Skills Demonstrated
+Frontend engineering: React component architecture, routing, responsive UI, and state management.
+
+API integration: Connecting a React frontend to a Django REST API using Axios and TanStack Query.
+
+Backend engineering: REST API design, request validation, authentication, and business logic.
+
+Database management: Relational data modeling, ORM queries, and PostgreSQL integration.
+
+Analytics: Capturing click events and visualizing usage data.
+
+Application security: Authentication, authorization, and per-user data isolation.
+
+Production deployment: Configuring separate frontend and backend services.
+
+Debugging: Resolving deployment configuration, CORS, environment-variable, and encoding issues.
+
+Developer workflow: Git, GitHub, environment configuration, and production builds.
+
+📁 Project Structure
+text
 ShortMetric/
 ├── backend/
 │   ├── apps/
@@ -247,175 +254,154 @@ ShortMetric/
 ├── .gitignore
 ├── LICENSE
 └── README.md
-```
-
-## 🚀 Getting Started
-
-### Prerequisites
-
+🚀 Getting Started
+Prerequisites
 Install the following:
 
-- Python 3.10 or later.
-- Node.js 18 or later and npm.
-- Git.
+Python 3.10 or later.
 
-### 1. Clone the Repository
+Node.js 18 or later and npm.
 
-```bash
+Git.
+
+1. Clone the Repository
+bash
 git clone https://github.com/Sabari-bala/ShortMetric.git
 cd ShortMetric
-```
-
-### 2. Set Up the Backend
-
+2. Set Up the Backend
 Run the following commands from the project root in Windows PowerShell:
 
-```powershell
+powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r backend\requirements\development.txt
 cd backend
 python manage.py migrate
 python manage.py runserver
-```
+The backend runs at: http://127.0.0.1:8000
 
-The backend runs at:
-
-http://127.0.0.1:8000
-
-### 3. Set Up the Frontend
-
+3. Set Up the Frontend
 Open a second terminal from the project root:
 
-```powershell
+powershell
 cd web
 npm install
 npm run dev
-```
-
-The frontend runs at:
-
-http://localhost:5173
+The frontend runs at: http://localhost:5173
 
 During local development, Vite proxies API requests to Django according to the project's Vite configuration.
 
-### 4. Configure Environment Variables
-
+4. Configure Environment Variables
 Use the environment example files provided by the project to configure local and production environments.
 
-**Backend configuration may include:**
+Backend configuration may include:
 
-- `DJANGO_SECRET_KEY`
-- `DJANGO_ALLOWED_HOSTS`
-- `DATABASE_URL`
-- `DJANGO_DEBUG`
+DJANGO_SECRET_KEY
 
-**Frontend configuration:**
+DJANGO_ALLOWED_HOSTS
 
-- `VITE_API_BASE_URL`
-- `VITE_SHORT_LINK_ORIGIN`
+DATABASE_URL
+
+DJANGO_DEBUG
+
+Frontend configuration:
+
+VITE_API_BASE_URL
+
+VITE_SHORT_LINK_ORIGIN
 
 Use the formats expected by the project's settings and Vite configuration. Never commit real secret keys, database credentials, or private environment files.
 
-## 🔌 API Endpoints
-
+🔌 API Endpoints
 The following table summarizes the main application endpoints.
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/auth/register/` | Register a user |
-| `POST` | `/api/auth/login/` | Log in |
-| `POST` | `/api/auth/logout/` | Log out |
-| `GET` | `/api/auth/me/` | Retrieve the current profile |
-| `PATCH` | `/api/auth/me/` | Update the profile |
-| `POST` | `/api/auth/change-password/` | Change the password |
-| `GET` | `/api/links/` | List links |
-| `POST` | `/api/links/` | Create a link |
-| `GET` | `/api/links/<id>/` | Retrieve a link |
-| `PATCH` | `/api/links/<id>/` | Update a link |
-| `DELETE` | `/api/links/<id>/` | Delete a link |
-| `GET` | `/api/analytics/` | Retrieve dashboard analytics |
-| `GET` | `/api/analytics/<link_id>/` | Retrieve per-link analytics |
-| `GET` | `/<short_code>/` | Redirect through a short link |
-
-### Link List Query Parameters
-
-| Parameter | Purpose |
-|---|---|
-| `page` | Select a results page |
-| `search` | Search by short code or original URL |
-| `status` | Filter by link status |
-| `sort` | Sort by date or click count |
-
-## 🧪 Testing
-
+Method	Endpoint	Purpose
+POST	/api/auth/register/	Register a user
+POST	/api/auth/login/	Log in
+POST	/api/auth/logout/	Log out
+GET	/api/auth/me/	Retrieve the current profile
+PATCH	/api/auth/me/	Update the profile
+POST	/api/auth/change-password/	Change the password
+GET	/api/links/	List links
+POST	/api/links/	Create a link
+GET	/api/links/<id>/	Retrieve a link
+PATCH	/api/links/<id>/	Update a link
+DELETE	/api/links/<id>/	Delete a link
+GET	/api/analytics/	Retrieve dashboard analytics
+GET	/api/analytics/<link_id>/	Retrieve per-link analytics
+GET	/<short_code>/	Redirect through a short link
+Link List Query Parameters
+Parameter	Purpose
+page	Select a results page
+search	Search by short code or original URL
+status	Filter by link status
+sort	Sort by date or click count
+🧪 Testing
 Run the backend test suite from the project root:
 
-```powershell
+powershell
 cd backend
 python manage.py test
-```
-
 The project's test coverage includes authentication, authorization, link CRUD operations, redirect behavior, click tracking, and analytics permissions.
 
-## 🌱 Demo Data
-
+🌱 Demo Data
 The project includes a custom Django management command for populating the demo database with sample links and click activity.
 
 Run it from the backend directory:
 
-```powershell
+powershell
 python manage.py seed_demo
-```
-
 Use this command only when appropriate for the target database. It can modify database contents, so verify the configured database before running it, especially in production.
 
-## ☁️ Deployment
-
-### Backend — Render
-
+☁️ Deployment
+Backend — Render
 The backend is deployed as a Django web service with PostgreSQL for production data.
 
 Deployment configuration includes:
 
-- Production Python dependencies.
-- The appropriate production Django settings.
-- Static-file collection.
-- Database migrations.
-- Gunicorn as the WSGI server.
-- Environment variables for secrets, hosts, and the database connection.
+Production Python dependencies.
+
+The appropriate production Django settings.
+
+Static-file collection.
+
+Database migrations.
+
+Gunicorn as the WSGI server.
+
+Environment variables for secrets, hosts, and the database connection.
 
 The exact build command must match the project's configured production build script and Render service root directory.
 
-### Frontend — Vercel
-
+Frontend — Vercel
 The React frontend is deployed separately through Vercel.
 
 Typical Vite deployment settings:
 
-- **Framework:** Vite.
-- **Build command:** `npm run build`.
-- **Output directory:** `dist`.
-- **Project root:** `web/`, when deploying from the frontend subdirectory.
+Framework: Vite.
 
-Configure `VITE_API_BASE_URL` and `VITE_SHORT_LINK_ORIGIN` in the Vercel project settings with the correct production values.
+Build command: npm run build.
 
-## 🔧 Production Debugging and Engineering Highlights
+Output directory: dist.
 
+Project root: web/, when deploying from the frontend subdirectory.
+
+Configure VITE_API_BASE_URL and VITE_SHORT_LINK_ORIGIN in the Vercel project settings with the correct production values.
+
+🔧 Production Debugging and Engineering Highlights
 During development and deployment, the project required resolving several real-world configuration issues:
 
-- **Django static files:** Addressed a `STATIC_ROOT` configuration issue on Render by ensuring production settings were active during the build.
-- **CORS and API routing:** Configured cross-origin handling and corrected frontend API URL configuration to avoid duplicated `/api/api/` paths.
-- **Environment variables:** Corrected deployment configuration so environment variables supplied the intended values.
-- **Windows file encoding:** Removed unwanted UTF-8 byte-order marks from frontend files that caused problems during the Vercel build.
-- **Demo data:** Created a Django management command to populate demonstration links and click activity for analytics.
+Django static files: Addressed a STATIC_ROOT configuration issue on Render by ensuring production settings were active during the build.
+
+CORS and API routing: Configured cross-origin handling and corrected frontend API URL configuration to avoid duplicated /api/api/ paths.
+
+Environment variables: Corrected deployment configuration so environment variables supplied the intended values.
+
+Windows file encoding: Removed unwanted UTF-8 byte-order marks from frontend files that caused problems during the Vercel build.
+
+Demo data: Created a Django management command to populate demonstration links and click activity for analytics.
 
 These experiences provided practical exposure to debugging issues that appear when moving an application from local development to production.
 
-## 📜 License
-
-See the [`LICENSE`](LICENSE) file for the applicable license terms.
-
----
-
-**ShortMetric — Short links. Clear insights.**
+📜 License
+See the LICENSE file for the applicable license terms.

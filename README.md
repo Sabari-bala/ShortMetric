@@ -2,6 +2,14 @@
 
 **Short links. Clear insights.**
 
+## 🌐 Live Demo
+
+- **Frontend:** https://shortmetric.vercel.app
+- **Backend API:** https://shortmetric-api.onrender.com
+- **Demo credentials:** `SabariBalaMR` / `ShortMetric@2026`
+
+> Free tier note: The backend may take 30–60 seconds to wake up on first request.
+
 ShortMetric is a full-stack link management and click analytics platform. Create short links with optional custom aliases, share them anywhere, and track how they perform in real time.
 
 ## Overview

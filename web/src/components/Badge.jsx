@@ -1,4 +1,4 @@
-﻿export default function Badge({ children, variant = 'muted', className = '' }) {
+export default function Badge({ children, variant = 'muted', className = '' }) {
   const variants = {
     success: 'badge-success',
     danger:  'badge-danger',

@@ -1,4 +1,4 @@
-﻿import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 export default function ConfirmDialog({
   open, title = 'Are you sure?',

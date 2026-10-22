@@ -1,4 +1,4 @@
-﻿import { Component } from 'react';
+import { Component } from 'react';
 import { AlertTriangle } from 'lucide-react';
 
 export default class ErrorBoundary extends Component {

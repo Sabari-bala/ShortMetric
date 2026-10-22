@@ -1,4 +1,4 @@
-﻿import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Pagination({ page, hasNext, hasPrev, onPrev, onNext }) {
   if (!hasNext && !hasPrev) return null;

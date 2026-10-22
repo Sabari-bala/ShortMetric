@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 
 export default function CopyButton({ text, className = '', label = 'Copy' }) {

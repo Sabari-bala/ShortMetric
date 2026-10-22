@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BarChart3, FileText, Trash2, ExternalLink, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { getShortUrl } from '../lib/shortUrl';

@@ -1,4 +1,4 @@
-﻿export default function Button({
+export default function Button({
   children,
   variant = 'primary',
   size = 'md',

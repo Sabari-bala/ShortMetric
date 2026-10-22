@@ -1,4 +1,4 @@
-﻿import api from './api';
+import api from './api';
 
 export const authService = {
   async register({ username, email, password, password2 }) {

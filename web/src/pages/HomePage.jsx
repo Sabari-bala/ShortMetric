@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Scissors, Share2, BarChart3, Zap, Lock, Clock, ArrowRight } from 'lucide-react';
 

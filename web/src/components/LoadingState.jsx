@@ -1,4 +1,4 @@
-﻿export function TableSkeleton({ rows = 5 }) {
+export function TableSkeleton({ rows = 5 }) {
   return (
     <div className="card divide-y divide-border">
       {Array.from({ length: rows }).map((_, i) => (

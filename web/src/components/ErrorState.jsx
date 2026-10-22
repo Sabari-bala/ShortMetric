@@ -1,4 +1,4 @@
-﻿import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 export default function ErrorState({ message = 'Something went wrong.', onRetry }) {
   return (

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Build the public short URL for a given short code.
  * In development this points to Django directly, in production to the deployed backend.
  */

@@ -1,4 +1,4 @@
-﻿export default function MetricCard({ label, value, subtitle, icon: Icon, accent = 'default' }) {
+export default function MetricCard({ label, value, subtitle, icon: Icon, accent = 'default' }) {
   const accents = {
     default: 'text-ink-secondary bg-surface-muted',
     primary: 'text-primary bg-primary-light',

@@ -1,109 +1,95 @@
-﻿# ShortMetric
+# ShortMetric
 
 > Short links. Clear insights.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://shortmetric.vercel.app)
 [![Backend](https://img.shields.io/badge/Backend-Django%205-092E20?style=for-the-badge&logo=django)](https://shortmetric-api.onrender.com)
-[![Frontend](https://img.shields.io/badge/Frontend-React%2018-61DAFB?style=for-the-badge&logo=react)](https://shortmetric.vercel.app)
+[![Frontend](https://img.shields.io/badge/Frontend-React%2019-61DAFB?style=for-the-badge&logo=react)](https://shortmetric.vercel.app)
 
-<!-- Add screenshots here: analytics dashboard, link list, QR code dialog -->
-
-ShortMetric is a full-stack link management and click analytics platform. Users create short links with custom aliases, expiration dates and QR codes, then see how each link performs through an interactive dashboard.
+ShortMetric is a full-stack link management and click analytics platform. Create short links with custom aliases and expiration dates, generate QR codes, and understand link performance through an interactive analytics dashboard.
 
 ## Live Demo
 
 - **Application:** https://shortmetric.vercel.app
 - **Backend API:** https://shortmetric-api.onrender.com
 
-**Demo account**
+The backend is hosted on a free tier and may take 30–60 seconds to wake after inactivity.
+
+### Demo account
 
 | Username | Password |
-|---|---|
+| --- | --- |
 | `SabariBalaMR` | `ShortMetric@2026` |
 
-> **Cold start:** The backend runs on a free hosting tier and may take 30-60 seconds to wake up after inactivity. The demo credentials are public, so the account contains demonstration data only.
-
-## What You Can Do
-
-- Create short links with generated codes or custom aliases.
-- Edit, enable, disable and delete links.
-- Set link expiration dates.
-- Generate and download QR codes as PNG files.
-- Track clicks and inspect browser, device, operating system and referrer data.
-- View interactive analytics for the whole account and for individual links.
-- Search, filter, sort and paginate links.
+The credentials are public and intended only for demonstration. Do not store personal or sensitive information in the demo account.
 
 ## Features
 
 ### Authentication and profile
-
-- Token-based registration, login and logout.
-- Protected frontend routes and session-expiry handling.
-- Profile editing (username and email) and password change with current-password verification.
-- Per-user data isolation enforced by the backend.
+- Token-based registration, login, and logout.
+- Protected frontend routes and handling for expired or invalid sessions.
+- Profile editing and password changes with current-password verification.
+- Backend-enforced per-user data isolation.
 
 ### Link management
+- Generate short codes or choose custom alphanumeric aliases.
+- Create, edit, enable, disable, and delete links.
+- Set optional expiration dates.
+- Generate and download QR codes as PNG files.
+- Search, filter by status, sort, and paginate link lists.
 
-- Create short links from valid URLs with six-character generated codes.
-- Custom aliases with validation and reserved-word protection.
-- Duplicate original URLs are prevented for the same user.
-- Enable or disable links without deleting them; confirm before deleting.
-- Optional expiration dates.
-- QR code generation with PNG download.
-
-### Public redirect system
-
-- Public endpoint at `/<short_code>/`.
-- Server-side checks for link existence, active status and expiration.
-- The click is recorded before the redirect, capturing timestamp, browser, device category, operating system, referrer and user agent.
-- Custom user-agent parser with no external parsing dependency.
+### Redirects and click tracking
+- Public redirect endpoint at `/<short_code>/`.
+- Checks link existence, active status, and expiration before redirecting.
+- Records click timestamp, browser, device category, operating system, referrer, and user-agent information.
+- Lightweight user-agent parsing without an external parsing dependency.
 
 ### Analytics dashboard
-
-- Overview metrics: total links, total clicks, active links and expired links.
-- Click activity over time, with device, browser and operating-system breakdowns.
-- Recent click activity for each link.
-- Search by short code or original URL; filter by active, inactive or expired; sort by newest, oldest, most clicks or fewest clicks; server-side pagination.
+- Overview of total links, clicks, active links, and expired links.
+- Click activity over time and device, browser, and operating-system breakdowns.
+- Recent click activity and per-link analytics.
+- Interactive charts powered by Recharts.
 
 ### User experience
+- Responsive desktop, tablet, and mobile layouts.
+- Reusable React components and a custom Tailwind CSS design system.
+- Toast notifications, copy-to-clipboard feedback, and QR-code downloads.
+- Loading, empty, and error states, plus a not-found page and error boundary.
 
-- Responsive layouts for desktop, tablet and mobile.
-- Custom Tailwind CSS design system and reusable React components.
-- Toast notifications and copy-to-clipboard feedback.
-- Loading, empty and error states, a 404 page and an error boundary.
-
-## Tech Stack
+## Technology Stack
 
 ### Frontend
 
 | Technology | Purpose |
-|---|---|
-| React 18 | Component-based UI |
-| Vite | Dev server and production build |
-| React Router v6 | Client-side routing |
+| --- | --- |
+| React 19 | Component-based user interface |
+| Vite | Development server and production build |
+| React Router 7 | Client-side routing |
 | TanStack Query | Server-state management and data fetching |
 | Axios | HTTP client |
-| Tailwind CSS | Responsive styling and design system |
+| Tailwind CSS 3 | Responsive styling and design system |
 | Recharts | Analytics charts |
-| qrcode.react | QR code generation |
+| qrcode.react | QR-code generation |
 | Lucide React | Icons |
 
 ### Backend
 
 | Technology | Purpose |
-|---|---|
-| Python, Django 5 | Web framework and application logic |
+| --- | --- |
+| Python 3.11 | Runtime |
+| Django 5 | Web framework and application logic |
 | Django REST Framework | REST API |
 | DRF TokenAuthentication | API authentication |
-| Django ORM | Data access |
+| Django ORM | Database access |
 | django-cors-headers | Cross-origin configuration |
-| Gunicorn, WhiteNoise | Production server and static files |
-| dj-database-url, python-dotenv | Environment-based configuration |
+| Gunicorn and WhiteNoise | Application serving and static files |
+| dj-database-url and python-dotenv | Environment-based configuration |
 
 ### Database and hosting
-
-- **PostgreSQL** in production (managed on Render), **SQLite** for local development.
-- **Render** hosts the backend; **Vercel** hosts the frontend.
+- **Development:** SQLite.
+- **Production configuration:** PostgreSQL through `DATABASE_URL`.
+- **Backend hosting:** Render.
+- **Frontend hosting:** Vercel.
 
 ## Architecture
 
@@ -111,161 +97,172 @@ ShortMetric is a full-stack link management and click analytics platform. Users 
 Browser
    |
    v
-React 18 + Vite  (UI, routing, API requests)
-   |  HTTPS / REST
+React + Vite (UI, routing, API requests)
+   | HTTPS / REST
    v
-Django REST Framework  (auth, business logic, analytics)
-   |  Django ORM
+Django REST Framework (authentication, business logic, analytics)
+   | Django ORM
    v
-PostgreSQL / SQLite  (users, links, click events)
+SQLite / PostgreSQL (users, links, click events)
 ```
 
-### Public redirect flow
+### Redirect flow
 
 ```text
 Visitor opens a short URL
         |
-Django redirect endpoint
+Django resolves the short code
         |
-Link exists?  -> no -> 404
+Link exists? ---- no ----> 404
         |
-Active and not expired?  -> no -> unavailable response
+Active and not expired? -- no --> unavailable response
         |
 Record click metadata
         |
 Redirect to the original URL
 ```
 
-### Database design
-
+### Data model
 - **User:** Django's built-in user model for accounts and authentication.
-- **Profile:** one-to-one extension of the user for profile information.
-- **Link:** `user` (owner), `original_url`, `short_code` (unique), `is_active`, `expires_at`, `created_at`, `updated_at`.
-- **Click:** `link`, `clicked_at`, `referrer`, `user_agent`, `browser`, `device_category`, `operating_system`.
+- **Link:** owner, original URL, unique short code, active status, optional expiration, and timestamps.
+- **Click:** link, timestamp, referrer, user agent, browser, device category, and operating system.
 
 ## API Endpoints
 
 | Method | Endpoint | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/api/auth/register/` | Register a user |
 | POST | `/api/auth/login/` | Log in |
-| POST | `/api/auth/logout/` | Log out |
+| POST | `/api/auth/logout/` | Log out and revoke the token |
 | GET, PATCH | `/api/auth/me/` | Retrieve or update the profile |
 | POST | `/api/auth/change-password/` | Change the password |
 | GET, POST | `/api/links/` | List or create links |
-| GET, PATCH, DELETE | `/api/links/<id>/` | Retrieve, update or delete a link |
+| GET, PATCH, DELETE | `/api/links/<id>/` | Retrieve, update, or delete a link |
 | GET | `/api/analytics/` | Dashboard analytics |
-| GET | `/api/analytics/<link_id>/` | Per-link analytics |
+| GET | `/api/analytics/<link_id>/` | Analytics for one link |
 | GET | `/<short_code>/` | Redirect through a short link |
 
-Link list query parameters: `page`, `search`, `status`, `sort`.
+Link-list query parameters include `page`, `search`, `status`, and `sort`.
 
 ## Local Setup
 
 ### Prerequisites
-
-- Python 3.10 or later (see `runtime.txt` for the deployed version)
-- Node.js 18 or later and npm
+- Python 3.11 (see `backend/runtime.txt`)
+- Node.js and npm compatible with the installed Vite version
 - Git
 
-### 1. Clone
+### 1. Clone the repository
 
-```bash
+```powershell
 git clone https://github.com/Sabari-bala/ShortMetric.git
 cd ShortMetric
 ```
 
-### 2. Backend
+### 2. Configure the backend
 
-**Windows (PowerShell):**
+From the project root, create and activate a virtual environment:
 
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r backend\requirements\development.txt
+```
+
+Copy `.env.example` to `.env` in the project root and replace the development secret with a local secret. For local development, the settings use SQLite.
+
+Run database migrations and start Django:
+
+```powershell
 cd backend
 python manage.py migrate
 python manage.py runserver
 ```
 
-**macOS / Linux:**
+The API runs at `http://127.0.0.1:8000`.
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r backend/requirements/development.txt
-cd backend
-python manage.py migrate
-python manage.py runserver
+### 3. Configure and run the frontend
+
+Open a second terminal at the project root. If using a deployed API, create `web/.env.local` and set the variables below. For local development, the Vite proxy sends API requests to Django and these values can be omitted.
+
+```dotenv
+VITE_API_BASE_URL=
+VITE_SHORT_LINK_ORIGIN=http://127.0.0.1:8000
 ```
 
-The backend runs at `http://127.0.0.1:8000`.
+Then run:
 
-### 3. Frontend
-
-In a second terminal from the project root:
-
-```bash
+```powershell
 cd web
 npm install
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173`. In development, Vite proxies API requests to Django.
+The frontend runs at `http://localhost:5173`.
 
-### 4. Environment variables
+### Environment variables
 
-Copy `.env.example` to `.env` and fill in the values.
+| Variable | Purpose |
+| --- | --- |
+| `DJANGO_SECRET_KEY` | Django secret key; use a private value outside local development |
+| `DJANGO_ALLOWED_HOSTS` | Comma-separated allowed hostnames for production |
+| `DATABASE_URL` | Optional database connection URL; production uses PostgreSQL |
+| `DJANGO_DEBUG` | Debug configuration where supported by the active settings |
+| `VITE_API_BASE_URL` | Optional API origin used by the frontend |
+| `VITE_SHORT_LINK_ORIGIN` | Origin used when constructing public short links |
 
-| Where | Variables |
-|---|---|
-| Backend | `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, `DATABASE_URL`, `DJANGO_DEBUG` |
-| Frontend | `VITE_API_BASE_URL`, `VITE_SHORT_LINK_ORIGIN` |
+Never commit real secret keys, database credentials, or private environment files.
 
-Never commit real secret keys or database credentials.
+## Tests
 
-## Testing
+Run the backend test suite from the backend directory:
 
-```bash
-cd backend
+```powershell
 python manage.py test
 ```
 
-Tests cover authentication, authorization, link CRUD, redirect behavior, click tracking and analytics permissions.
-
-<!-- After CI is added: put the test count and a CI badge here. -->
+The tests cover authentication, link creation and ownership, redirect behavior, click tracking, and analytics access permissions.
 
 ## Demo Data
 
-A management command fills the database with sample links and click activity:
+A management command can populate the configured database with sample links and click activity:
 
-```bash
-cd backend
+```powershell
 python manage.py seed_demo
 ```
 
-It modifies database contents, so check which database is configured before running it.
+Check the active database configuration before running this command. It modifies database contents.
 
 ## Deployment
 
-**Backend (Render).** A Django web service with a managed PostgreSQL database. The build installs production dependencies, collects static files and runs migrations; Gunicorn serves the app and WhiteNoise serves static files. Secrets, allowed hosts and the database URL come from environment variables.
+### Backend — Render
+- Uses the production Django settings module.
+- Installs dependencies from `backend/requirements/production.txt`.
+- Collects static files and applies migrations during the build.
+- Uses environment variables for the secret key, allowed hosts, and database URL.
+- Runs the application with Gunicorn and serves static files through WhiteNoise.
 
-**Frontend (Vercel).** Framework preset Vite, project root `web/`, build command `npm run build`, output directory `dist`. `VITE_API_BASE_URL` and `VITE_SHORT_LINK_ORIGIN` are set in the Vercel project settings.
+### Frontend — Vercel
+- Framework preset: Vite.
+- Project root: `web/`.
+- Build command: `npm run build`.
+- Output directory: `dist`.
+- Configure `VITE_API_BASE_URL` and `VITE_SHORT_LINK_ORIGIN` in the Vercel project settings when required.
 
 ## Engineering Notes
 
-- **Static files on Render:** The build failed on `STATIC_ROOT` because production settings were not active during the build. Fixed by making sure the production settings module is used at build time.
-- **Duplicated API path:** Requests were going to `/api/api/...` because the base URL and the endpoint paths both included `/api`. Fixed by correcting the frontend API base URL.
-- **Invisible BOM characters:** Windows PowerShell added UTF-8 byte-order marks to frontend files, which broke the Vercel build. Diagnosed and removed them.
-- **CORS:** Configured cross-origin handling between the Vercel frontend and the Render API.
-- **Fast redirect path:** The redirect endpoint validates the link and records the click in a single write before redirecting.
+- Fixed a duplicated API path issue (`/api/api/`) by aligning the frontend API base URL with endpoint paths.
+- Resolved a Vercel build issue caused by UTF-8 byte-order marks in files edited through Windows PowerShell.
+- Configured CORS for communication between the Vercel frontend and Render API.
+- Kept redirect validation and click recording on the backend rather than relying on client-side tracking.
 
 ## Known Limitations
 
-- The backend runs on a free tier and sleeps after inactivity, so the first request can be slow.
-- DRF's built-in token authentication issues tokens that do not expire.
-- Click counts do not filter out bots or link-preview crawlers.
-- No rate limiting on the public redirect endpoint.
+- The free backend hosting tier may sleep after inactivity, making the first request slow.
+- DRF's built-in token authentication does not expire tokens automatically; logout revokes the current token.
+- Click totals do not currently exclude bots or link-preview crawlers.
+- The public redirect endpoint does not currently have dedicated rate limiting.
+
+These limitations are documented intentionally and are candidates for future hardening.
 
 ## Project Structure
 

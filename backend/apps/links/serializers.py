@@ -1,9 +1,6 @@
 ﻿from urllib.parse import urlparse
-
 from rest_framework import serializers
-
 from apps.links.models import Link
-
 
 class LinkSerializer(serializers.ModelSerializer):
     click_count = serializers.SerializerMethodField(read_only=True)
@@ -22,28 +19,22 @@ class LinkSerializer(serializers.ModelSerializer):
     def validate_short_code(self, value):
         if value and not value.isalnum():
             raise serializers.ValidationError("Short code can only contain letters and numbers.")
-        if value and Link.objects.filter(short_code=value).exists():
-            raise serializers.ValidationError("This short code is already taken.")
+        if value:
+            qs = Link.objects.filter(short_code=value)
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise serializers.ValidationError("This short code is already taken.")
         return value
 
     def validate_original_url(self, value):
-        # Must start with http:// or https://
         if not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("URL must start with http:// or https://")
         parsed = urlparse(value)
         if not parsed.netloc:
             raise serializers.ValidationError("URL must include a domain (e.g., example.com)")
-        domain = parsed.netloc.split('@')[-1].split(':')[0]
-        if not domain:
-            raise serializers.ValidationError("Invalid domain in URL")
-        # Allow localhost for development
-        if domain == 'localhost':
-            return value
-        if '.' not in domain:
+        if '.' not in parsed.netloc and parsed.netloc != 'localhost':
             raise serializers.ValidationError("URL must contain a valid domain with a dot (e.g., example.com)")
-        tld = domain.rsplit('.', 1)[-1]
-        if len(tld) < 2:
-            raise serializers.ValidationError("URL must have a valid top-level domain (e.g., .com, .org)")
         return value
 
     def validate(self, attrs):

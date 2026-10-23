@@ -75,3 +75,21 @@ class LinkTests(APITestCase):
         response = self.client.get('/disabled1/')
         self.assertEqual(response.status_code, 404)
         self.assertEqual(Click.objects.filter(link=link).count(), 0)
+
+class LinkUpdateTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='updateuser', password='password123')
+        self.other_user = User.objects.create_user(username='otheruser2', password='password123')
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    def test_update_link_with_existing_alias(self):
+        link = Link.objects.create(user=self.user, original_url='https://example.com/1', short_code='myalias')
+        response = self.client.patch(f'/api/links/{link.id}/', {'short_code': 'myalias'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_link_with_other_users_alias(self):
+        Link.objects.create(user=self.other_user, original_url='https://example.com/2', short_code='otheralias')
+        link = Link.objects.create(user=self.user, original_url='https://example.com/3', short_code='myalias')
+        response = self.client.patch(f'/api/links/{link.id}/', {'short_code': 'otheralias'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

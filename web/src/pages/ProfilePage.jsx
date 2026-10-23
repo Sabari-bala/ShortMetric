@@ -131,6 +131,8 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
         email: form.email.trim(),
       });
       if (updated.username !== user.username) localStorage.setItem('username', updated.username);
+          if (updated.token) localStorage.setItem('token', updated.token);
+          if (updated.token) localStorage.setItem('token', updated.token);
       onUpdate(updated);
       setEditing(false);
     } catch (err) {

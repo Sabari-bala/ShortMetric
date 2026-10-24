@@ -117,7 +117,8 @@ python manage.py runserver
 **macOS / Linux**
 ```bash
 python3 -m venv venv
-python3 -m pip install -r backend/requirements/development.txt
+source venv/bin/activate
+python -m pip install -r backend/requirements/development.txt
 cd backend
 python manage.py migrate
 python manage.py runserver
@@ -192,6 +193,7 @@ GitHub Actions runs the Django system check and backend test suite, and installs
 
 - The free backend hosting tier can spin down after inactivity, delaying the first request.
 - DRF token authentication tokens do not expire automatically; they must be revoked.
+- The frontend stores the authentication token in browser `localStorage`. A successful cross-site scripting (XSS) attack could expose it, so avoid using sensitive accounts or data.
 - Click analytics do not currently filter bot traffic or link-preview crawlers.
 - The public short-link redirect endpoint does not have dedicated rate limiting.
 

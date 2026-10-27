@@ -340,3 +340,7 @@ This project is distributed under the MIT License. See [LICENSE](LICENSE) for de
 **Built by Sabari Bala M R**
 
 [GitHub](https://github.com/Sabari-bala) · [LinkedIn](https://linkedin.com/in/sabari-bala)
+
+### Additional Engineering Notes
+- **Windows BOM Encoding Failure:** Diagnosed and resolved a CI build failure caused by Windows PowerShell injecting invisible Byte Order Marks (BOM) into JSON and JSX files during file creation. This was fixed by writing a Python/PowerShell script to strip the BOM at the byte level, ensuring Vercel and GitHub Actions could parse the files correctly.
+- **CI Environment Fix:** Fixed GitHub Actions failures by pinning Node 22 (to resolve `undici` worker crashes during Vitest execution) and explicitly defining the Python cache dependency path to prevent missing package errors.

@@ -253,7 +253,7 @@ npm ci
 npm run build
 ```
 
-The GitHub Actions workflow runs the configured Django checks and backend test suite, along with a frontend production build, for the relevant pushes and pull requests targeting `main`.
+The GitHub Actions workflow runs Django checks and backend tests, the frontend Vitest test, and a production build on pushes to `main` and pull requests targeting `main`.
 
 **CI workflow:** [View GitHub Actions](https://github.com/Sabari-bala/ShortMetric/actions/workflows/ci.yml)
 

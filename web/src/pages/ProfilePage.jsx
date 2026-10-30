@@ -2,7 +2,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   User, Mail, Calendar, Link2, MousePointerClick, CheckCircle2, XCircle,
-  Pencil, X, Save, Lock, ArrowRight, Settings as SettingsIcon,
+  Pencil, X, Save, Lock, ArrowRight,
 } from 'lucide-react';
 import { MetricCard, LoadingState, ErrorState, Input, Badge } from '../components';
 import { authService } from '../services/authService';
@@ -62,13 +62,11 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Page header */}
       <div className="mb-6">
         <h1 className="page-title">Profile & Settings</h1>
         <p className="page-subtitle">Manage your account information and security.</p>
       </div>
 
-      {/* Tabs */}
       <div className="border-b border-border mb-6">
         <div className="flex gap-1">
           {TABS.map(({ id, label, icon: Icon }) => (
@@ -88,7 +86,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Tab content */}
       {activeTab === 'profile' && (
         <ProfileTab
           profile={profile}
@@ -109,7 +106,6 @@ export default function ProfilePage() {
   );
 }
 
-// ---------- Profile Tab ----------
 function ProfileTab({ profile, stats, user, onUpdate, onError }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ username: profile.username || '', email: profile.email || '' });
@@ -131,8 +127,7 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
         email: form.email.trim(),
       });
       if (updated.username !== user.username) localStorage.setItem('username', updated.username);
-          if (updated.token) localStorage.setItem('token', updated.token);
-          if (updated.token) localStorage.setItem('token', updated.token);
+      if (updated.token) localStorage.setItem('token', updated.token);
       onUpdate(updated);
       setEditing(false);
     } catch (err) {
@@ -150,7 +145,6 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
 
   return (
     <div className="space-y-4">
-      {/* Account overview */}
       <div className="card p-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -208,7 +202,6 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
         )}
       </div>
 
-      {/* Metrics */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard label="Total Links" value={stats.total_links} subtitle="All time" icon={Link2} accent="primary" />
@@ -218,7 +211,6 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
         </div>
       )}
 
-      {/* Recent links */}
       {recentLinks.length > 0 && (
         <div className="card p-4">
           <div className="flex items-center justify-between mb-3">
@@ -256,7 +248,6 @@ function ProfileTab({ profile, stats, user, onUpdate, onError }) {
   );
 }
 
-// ---------- Security Tab ----------
 function SecurityTab({ onSuccess }) {
   const [form, setForm] = useState({ current_password: '', new_password: '', confirm_password: '' });
   const [errors, setErrors] = useState({});
@@ -297,6 +288,11 @@ function SecurityTab({ onSuccess }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
+        {errors.detail && (
+          <div className="px-3 py-2 rounded-md bg-danger-light text-danger text-xs">
+            {errors.detail}
+          </div>
+        )}
         <Input
           id="current_password"
           type="password"
@@ -333,5 +329,3 @@ function SecurityTab({ onSuccess }) {
     </div>
   );
 }
-
-

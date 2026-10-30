@@ -47,3 +47,11 @@ jobs:
       - name: Build Frontend
         run: npm run build
         working-directory: ./web
+
+  deploy:
+    needs: [backend-test, frontend-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Trigger Render Deploy
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

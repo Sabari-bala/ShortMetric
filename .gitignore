@@ -25,3 +25,5 @@ README.backup.*.md
 !backend/Procfile
 !backend/build.sh
 !backend/runtime.txt
+.vercel
+.env*

@@ -1,4 +1,4 @@
-﻿from django.contrib import admin
+from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 
@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/auth/', include('apps.users.urls')),
     path('api/links/', include('apps.links.urls')),
     path('api/analytics/', include('apps.analytics.urls')),
-    path('<str:short_code>/', redirect_short_link, name='short-link-redirect'),
+    path('<str:short_code>', redirect_short_link, name='short-link-redirect'),
+    path('<str:short_code>/', redirect_short_link, name='short-link-redirect-legacy'),
 ]

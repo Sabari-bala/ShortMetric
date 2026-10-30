@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components';
@@ -23,7 +23,7 @@ export default function LoginPage() {
     if (!form.username.trim() || !form.password) return setError('Please fill in both fields.');
     setSubmitting(true);
     try {
-      await login(form);
+      await login({ username: form.username.trim(), password: form.password.trim() });
       navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid credentials.');
@@ -75,3 +75,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components';
@@ -22,7 +22,7 @@ export default function RegisterPage() {
     if (form.password !== form.password2) return setError('Passwords do not match.');
     setSubmitting(true);
     try {
-      await register(form);
+      await register({ ...form, username: form.username.trim(), email: form.email.trim(), password: form.password.trim(), password2: form.password2.trim() });
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const data = err.response?.data;
@@ -91,3 +91,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

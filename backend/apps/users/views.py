@@ -104,6 +104,10 @@ class ChangePasswordView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
+        # BLOCK THE DEMO ACCOUNT
+        if request.user.username == 'SabariBalaMR':
+            return Response({'detail': 'Password changes are disabled for the demo account.'}, status=status.HTTP_403_FORBIDDEN)
+
         user = request.user
         current = request.data.get('current_password')
         new_password = request.data.get('new_password')

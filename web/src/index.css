@@ -84,3 +84,7 @@ input[type="password"]::-webkit-strong-password-auto-fill-button {
   position: absolute;
   right: 0;
 }
+
+body {
+  overflow-x: hidden;
+}

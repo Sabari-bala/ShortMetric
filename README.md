@@ -2,345 +2,125 @@
 
 **Short links. Clear insights.**
 
-ShortMetric is a full-stack URL shortening and click analytics platform built with Django REST Framework and React. It enables users to create and manage short URLs, customize aliases, generate QR codes, and understand link performance through an analytics dashboard.
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://shortmetric.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render)](https://shortmetric-api.onrender.com)
+[![CI Pipeline](https://github.com/Sabari-bala/ShortMetric/actions/workflows/ci.yml/badge.svg)](https://github.com/Sabari-bala/ShortMetric/actions/workflows/ci.yml)
 
-<p align="left">
-  <a href="https://shortmetric.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-Open%20App-6C4CE0?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo"></a>
-  <a href="https://github.com/Sabari-bala/ShortMetric/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Sabari-bala/ShortMetric/ci.yml?branch=main&label=CI&logo=githubactions&style=for-the-badge" alt="CI status"></a>
-  <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Django-5.x-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django">
-  <img src="https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react&logoColor=white" alt="React">
-</p>
+ShortMetric is a full-stack link management and click analytics platform. Users create short links with custom aliases, expiration dates, and QR codes, then see how each link performs through an interactive dashboard.
 
-**Live application:** https://shortmetric.vercel.app  
-**Backend API:** https://shortmetric-api.onrender.com  
-**Source code:** https://github.com/Sabari-bala/ShortMetric
+## 🔗 Live Demo
 
-## Demo access
+- **Application:** https://shortmetric.vercel.app
+- **Backend API:** https://shortmetric-api.onrender.com
 
-You can explore the deployed application using the dedicated public demo account.
+**Demo account (One-Click Login available on the login page)**
 
-| Field | Value |
+| Username | Password |
 |---|---|
-| Application | [ShortMetric Live Demo](https://shortmetric.vercel.app) |
-| Username | `SabariBalaMR` |
-| Password | `ShortMetric@2026` |
+| `SabariBalaMR` | `ShortMetric@2026` |
 
-**Please note:**
-- The backend runs on Render's free tier and may need approximately 15–30 seconds to wake up after inactivity.
-- This is a shared demonstration account. Its data may be modified or reset.
-- Do not enter personal, confidential, or sensitive information.
+> **Note:** The backend runs on Render's free tier and may take 15–30 seconds to wake up after inactivity. The demo credentials are public, and the backend explicitly blocks password changes for the demo account to ensure it never breaks.
 
-## Features
+## ✨ Features
 
-### Link management
-- Create short URLs from longer destination links.
-- Customize short-link aliases.
-- Edit destination URLs and manage existing links.
-- Set expiration dates for links.
-- Enable or disable links.
-- Search, filter, sort, and paginate link collections.
+- **Authentication:** Token-based registration, login, and logout. Protected frontend routes.
+- **One-Click Demo:** A dedicated button on the login page to instantly access the demo account.
+- **Link Management:** Create, edit, enable/disable, and delete links. Custom aliases with reserved-word protection.
+- **QR Codes:** Generate and download dynamic QR codes as PNG files.
+- **Public Redirects:** Anonymous visitors are validated server-side, tracked, and redirected via a 302 response.
+- **Analytics Dashboard:** Overview metrics, click activity over time, browser/device/OS breakdowns (using Recharts), search, filtering, and pagination.
+- **Security:** Argon2 password hashing, strict per-user data isolation, and disabled password changes for demo users.
 
-### Click analytics
-- Track clicks on short links.
-- Record available click timestamps and referrer information.
-- Capture user-agent information for browser, device, and operating-system breakdowns.
-- View dashboard metrics and activity over time.
-- Explore analytics for individual links.
+## 🛠️ Tech Stack
 
-### QR codes
-- Generate QR codes for short URLs.
-- Download QR codes as PNG images.
+### Frontend
+- **React 19 & Vite:** Fast SPA with route-based code splitting (`React.lazy`/`Suspense`).
+- **Tailwind CSS:** Custom design system (Teal/Emerald palette).
+- **React Router 7:** Client-side routing.
+- **TanStack Query & Axios:** Server-state management and API requests.
+- **Recharts & Lucide React:** Interactive charts and icons.
+- **Vitest & React Testing Library:** Frontend component testing.
 
-### Authentication and access control
-- Register and authenticate user accounts.
-- Update profile details and change passwords.
-- Revoke the current authentication token on logout.
-- Restrict link management and analytics queries to the authenticated user's resources.
+### Backend
+- **Python 3 & Django 5:** Core web framework.
+- **Django REST Framework (DRF):** REST API and Token Authentication.
+- **Argon2:** Secure password hashing.
+- **Gunicorn & WhiteNoise:** Production server and static file serving.
+- **PostgreSQL (Neon.tech):** Permanent production database.
+- **SQLite:** Local development database.
 
-### User experience
-- Responsive layouts for desktop, tablet, and mobile.
-- Loading, empty, error, and not-found states.
-- Client-side route navigation and lazy-loaded page components.
+### DevOps & CI/CD
+- **GitHub Actions:** CI pipeline running backend tests, frontend tests, and builds.
+- **Render:** Backend hosting and automated deployment via deploy hooks.
+- **Vercel:** Frontend hosting, SPA routing (`vercel.json`), and API proxying.
 
-## Technology stack
-
-| Layer | Technologies |
-|---|---|
-| Frontend | React 19, Vite 8, JavaScript |
-| Styling | Tailwind CSS 3 |
-| Routing | React Router 7 |
-| Server-state management | TanStack Query |
-| HTTP communication | Axios |
-| Analytics visualization | Recharts |
-| Icons | Lucide React |
-| QR code generation | qrcode.react |
-| Backend | Python 3.11, Django 5, Django REST Framework |
-| Authentication | DRF TokenAuthentication |
-| Data access | Django ORM |
-| Production database | Neon PostgreSQL |
-| Development database | SQLite |
-| Frontend deployment | Vercel |
-| Backend deployment | Render |
-| Automated checks | GitHub Actions |
-
-## Architecture
+## 🏗️ Architecture
 
 ```text
-                    User / Browser
-                          |
-                          v
-                React + Vite Frontend
-                 |                  |
-                 |                  v
-                 |             React Router
-                 |
-                 | HTTPS / REST API
-                 v
-             Django REST Framework
-                 |
-       +---------+----------+
-       |         |          |
-       v         v          v
-    Users      Links     Analytics
-       |         |          |
-       +---------+----------+
-                 |
-                 v
-             Django ORM
-                 |
-                 v
-          Database Layer
-          /             \
- SQLite (development)  PostgreSQL (production)
-```
+Browser
+   │
+   ▼
+React 19 + Vite (Vercel)
+   │  HTTPS / REST (Proxy via vercel.json)
+   ▼
+Django REST Framework (Render)
+   │  Django ORM
+   ▼
+PostgreSQL (Neon.tech)
+Public Redirect Flow
+text
+Visitor opens short URL -> Django redirect endpoint -> Validate (exists, active, not expired) -> Record click metadata -> Redirect to destination.
+🗄️ Database Models
+User: Django's built-in user model.
 
-The frontend communicates with the backend through REST endpoints. Django handles authentication, link management, redirect validation, click tracking, and analytics access.
+Profile: One-to-one extension for user info.
 
-## How short-link redirection works
+Link: user, original_url, short_code, is_active, expires_at.
 
-1. A visitor opens a ShortMetric URL.
-2. The backend looks up the corresponding short code.
-3. The application checks whether the link exists, is enabled, and has not expired.
-4. Available click metadata is recorded.
-5. The visitor is redirected to the destination URL.
+Click: link, clicked_at, referrer, user_agent, browser, device_category, operating_system.
 
-## API overview
+🚀 Getting Started (Local Development)
+1. Clone the repository
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/auth/register/` | Register an account |
-| `POST` | `/api/auth/login/` | Authenticate a user |
-| `POST` | `/api/auth/logout/` | Revoke the current token |
-| `GET`, `PATCH` | `/api/auth/me/` | Retrieve or update the profile |
-| `POST` | `/api/auth/change-password/` | Change the account password |
-| `GET`, `POST` | `/api/links/` | List or create links |
-| `GET`, `PATCH`, `DELETE` | `/api/links/<id>/` | Retrieve, update, or delete a link |
-| `GET` | `/api/analytics/` | Retrieve dashboard analytics |
-| `GET` | `/api/analytics/<link_id>/` | Retrieve analytics for an individual link |
-| `GET` | `/<short_code>/` | Redirect through a short link |
-
-The link-list endpoint supports pagination and query parameters for search, filtering, and sorting. Refer to the source code for the current request and response schemas.
-
-## Getting started locally
-
-### Prerequisites
-
-Install the following tools before starting:
-
-- Python 3.11
-- Node.js and npm
-- Git
-- Visual Studio Code (recommended)
-
-### 1. Clone the repository
-
-```bash
+bash
 git clone https://github.com/Sabari-bala/ShortMetric.git
 cd ShortMetric
-```
+2. Backend Setup
 
-### 2. Create and activate a Python virtual environment
-
-**Windows PowerShell**
-
-```powershell
+powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks script execution, use an appropriate execution-policy setting for your environment or activate the environment from Command Prompt instead.
-
-**macOS / Linux**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install backend dependencies
-
-From the repository root:
-
-```bash
-python -m pip install -r backend/requirements/development.txt
-```
-
-On Windows PowerShell, the equivalent path is:
-
-```powershell
-python -m pip install -r backend\requirements\development.txt
-```
-
-### 4. Configure environment variables
-
-Use `.env.example` as a reference and create the required local environment configuration. Supply the values appropriate for your local setup.
-
-Common configuration variables include:
-
-| Variable | Purpose |
-|---|---|
-| `DJANGO_SECRET_KEY` | Django application secret |
-| `DJANGO_ALLOWED_HOSTS` | Permitted backend hostnames |
-| `DJANGO_DEBUG` | Development debug setting |
-| `DATABASE_URL` | Database connection string when using database URL configuration |
-| `VITE_API_BASE_URL` | Frontend API base URL |
-| `VITE_SHORT_LINK_ORIGIN` | Origin used to construct short URLs |
-
-The exact requirements depend on the active Django settings module. Never commit real secrets, database credentials, or private environment files.
-
-### 5. Run database migrations and start Django
-
-```bash
+pip install -r backend\requirements\development.txt
 cd backend
 python manage.py migrate
 python manage.py runserver
-```
+3. Frontend Setup
 
-The local backend is available at:
-
-http://127.0.0.1:8000
-
-### 6. Install frontend dependencies and start Vite
-
-Open a second terminal at the repository root:
-
-```bash
+powershell
 cd web
-npm ci
+npm install
 npm run dev
-```
+🧪 Testing
+Backend: 18 tests covering authentication, authorization, CRUD, redirects, and analytics.
 
-The frontend is available at:
-
-http://localhost:5173
-
-During local development, Vite is configured to proxy API requests to the local Django server.
-
-## Testing and quality checks
-
-Run backend checks and tests from the backend directory:
-
-```bash
-python manage.py check
+powershell
+cd backend
 python manage.py test
-```
+Frontend: 1 test covering component rendering.
 
-Create a production frontend build from the `web` directory:
+powershell
+cd web
+npm run test
+☁️ Deployment Configuration
+Render: Uses build.sh to install dependencies, collect static files, and run migrations. CI triggers a deploy hook after tests pass.
 
-```bash
-npm ci
-npm run build
-```
+Vercel: Uses vercel.json for SPA fallback routing, API proxying to avoid CORS, and no-cache headers for index.html to ensure users always get the latest version.
 
-The GitHub Actions workflow runs Django checks and backend tests, the frontend Vitest test, and a production build on pushes to `main` and pull requests targeting `main`.
+Neon: Database connection is handled via the DATABASE_URL environment variable.
 
-**CI workflow:** [View GitHub Actions](https://github.com/Sabari-bala/ShortMetric/actions/workflows/ci.yml)
+⚠️ Known Limitations
+DRF tokens do not automatically expire (JWT with refresh tokens is recommended for V2).
 
-## Deployment
+The public redirect endpoint lacks rate limiting (vulnerable to bot traffic).
 
-### Frontend — Vercel
-The React application is built with Vite. Configure the frontend project to use `web/` as its root directory and `dist` as the build output directory. Set the required frontend environment variables in the deployment settings.
-
-### Backend — Render
-The Django application is deployed using a production server configuration with Gunicorn and WhiteNoise. Configure the required environment variables and production settings in the hosting dashboard.
-
-### Database — Neon PostgreSQL
-The deployed backend uses PostgreSQL. Configure the production connection through `DATABASE_URL`. SQLite is intended for local development.
-
-Deployment settings should be reviewed whenever the frontend URL, backend URL, database configuration, or environment variables change.
-
-## Engineering decisions
-
-- **Separated frontend and backend:** The React SPA and Django REST API have distinct responsibilities and communicate through HTTP endpoints.
-- **User-scoped data access:** Authenticated link and analytics operations are restricted by ownership.
-- **Database portability:** Django's ORM supports local SQLite development and a PostgreSQL production database.
-- **Lazy-loaded routes:** Page-level code splitting helps reduce the JavaScript required for initial route loading.
-- **Automated checks:** CI verifies the configured backend checks and frontend production build.
-- **Deployment troubleshooting:** The project includes fixes for SPA deep-link routing and deployment configuration issues encountered during development.
-
-## Known limitations and security considerations
-
-- **Cold starts:** The free backend hosting tier may spin down after inactivity.
-- **Token expiration:** DRF authentication tokens do not automatically expire; they must be revoked.
-- **Browser token storage:** The frontend stores authentication tokens in `localStorage`. An XSS vulnerability could expose a stored token.
-- **Analytics accuracy:** Bot traffic and link-preview crawlers are not currently filtered from click analytics.
-- **Redirect rate limiting:** The public short-link redirect endpoint does not currently have dedicated rate limiting.
-
-These limitations are documented so users and reviewers can understand the current implementation and its potential improvements.
-
-## Project structure
-
-```text
-ShortMetric/
-├── backend/
-│   ├── apps/
-│   │   ├── users/          # Authentication and profiles
-│   │   ├── links/          # Link management and redirects
-│   │   └── analytics/      # Click tracking and analytics
-│   ├── config/
-│   │   └── settings/
-│   ├── requirements/
-│   └── manage.py
-├── web/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── layouts/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   └── context/
-│   ├── package.json
-│   └── vite.config.js
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .env.example
-├── runtime.txt
-├── LICENSE
-└── README.md
-```
-
-## Future improvements
-
-Potential next steps include:
-
-- Add dedicated rate limiting for public redirects.
-- Improve bot and link-preview traffic detection.
-- Revisit authentication-token storage and session security.
-- Add richer analytics filters and date-range comparisons.
-- Expand monitoring and production error reporting.
-
-## License
-
-This project is distributed under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-**Built by Sabari Bala M R**
-
-[GitHub](https://github.com/Sabari-bala) · [LinkedIn](https://linkedin.com/in/sabari-bala)
-
-### Additional Engineering Notes
-- **Windows BOM Encoding Failure:** Diagnosed and resolved a CI build failure caused by Windows PowerShell injecting invisible Byte Order Marks (BOM) into JSON and JSX files during file creation. This was fixed by writing a Python/PowerShell script to strip the BOM at the byte level, ensuring Vercel and GitHub Actions could parse the files correctly.
-- **CI Environment Fix:** Fixed GitHub Actions failures by pinning Node 22 (to resolve `undici` worker crashes during Vitest execution) and explicitly defining the Python cache dependency path to prevent missing package errors.
+Render's free tier causes a 15–30 second cold start.

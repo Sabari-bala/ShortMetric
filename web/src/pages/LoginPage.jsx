@@ -2,7 +2,7 @@
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components';
-import { LogIn } from 'lucide-react';
+import { LogIn, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
@@ -30,6 +30,11 @@ export default function LoginPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const fillDemo = () => {
+    setForm({ username: 'SabariBalaMR', password: 'ShortMetric@2026' });
+    setError('');
   };
 
   return (
@@ -67,6 +72,16 @@ export default function LoginPage() {
           </button>
         </form>
 
+        <div className="mt-4 pt-4 border-t border-border">
+          <button onClick={fillDemo} type="button" className="btn btn-outline w-full border-primary/30 text-primary hover:bg-primary-light">
+            <Sparkles className="w-3.5 h-3.5" />
+            One-Click Demo Login
+          </button>
+          <p className="text-center text-2xs text-ink-muted mt-2">
+            Instantly fill the demo credentials
+          </p>
+        </div>
+
         <div className="text-center text-xs text-ink-secondary mt-5">
           Don't have an account?{' '}
           <Link to="/register" className="font-medium text-primary hover:underline">Register</Link>
@@ -75,4 +90,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
